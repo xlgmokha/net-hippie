@@ -13,9 +13,13 @@ module Net
         @key = key
       end
 
+      def execute(uri, request)
+        http_for(uri).request(request)
+      end
+
       def get(uri, headers: {}, body: {})
         request = get_for(uri, headers: headers, body: body)
-        response = http_for(uri).request(request)
+        response = execute(uri, request)
         if block_given?
           yield request, response
         else
@@ -25,7 +29,7 @@ module Net
 
       def post(uri, headers: {}, body: {})
         request = post_for(uri, headers: headers, body: body)
-        response = http_for(uri).request(request)
+        response = execute(uri, request)
         if block_given?
           yield request, response
         else
@@ -35,7 +39,7 @@ module Net
 
       def put(uri, headers: {}, body: {})
         request = put_for(uri, headers: headers, body: body)
-        response = http_for(uri).request(request)
+        response = execute(uri, request)
         if block_given?
           yield request, response
         else
@@ -50,7 +54,7 @@ module Net
       def http_for(uri)
         http = Net::HTTP.new(uri.host, uri.port)
         http.read_timeout = 30
-        http.use_ssl = true
+        http.use_ssl = uri.is_a?(URI::HTTPS)
         http.set_debug_output(Net::Hippie.logger)
         http.cert = OpenSSL::X509::Certificate.new(certificate) if certificate
         http.key = OpenSSL::PKey::RSA.new(key) if key
@@ -58,23 +62,20 @@ module Net
       end
 
       def post_for(uri, headers: {}, body: {})
-        headers = default_headers.merge(headers)
-        Net::HTTP::Post.new(uri, headers).tap do |post|
-          post.body = JSON.generate(body)
+        Net::HTTP::Post.new(uri, default_headers.merge(headers)).tap do |x|
+          x.body = JSON.generate(body)
         end
       end
 
       def put_for(uri, headers: {}, body: {})
-        headers = default_headers.merge(headers)
-        Net::HTTP::Put.new(uri, headers).tap do |put|
-          put.body = JSON.generate(body)
+        Net::HTTP::Put.new(uri, default_headers.merge(headers)).tap do |x|
+          x.body = JSON.generate(body)
         end
       end
 
       def get_for(uri, headers: {}, body: {})
-        headers = default_headers.merge(headers)
-        Net::HTTP::Get.new(uri, headers).tap do |get|
-          get.body = JSON.generate(body) unless body.empty?
+        Net::HTTP::Get.new(uri, default_headers.merge(headers)).tap do |x|
+          x.body = JSON.generate(body) unless body.empty?
         end
       end
     end
