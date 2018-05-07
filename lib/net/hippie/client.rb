@@ -1,5 +1,6 @@
 module Net
   module Hippie
+    # A simple client for connecting with http resources.
     class Client
       DEFAULT_HEADERS = {
         'Accept' => 'application/json',
@@ -36,7 +37,8 @@ module Net
       end
 
       def post(uri, headers: {}, body: {})
-        request = request_for(Net::HTTP::Post, uri, headers: headers, body: body)
+        type = Net::HTTP::Post
+        request = request_for(type, uri, headers: headers, body: body)
         response = execute(uri, request)
         if block_given?
           yield request, response
@@ -67,9 +69,9 @@ module Net
         http.read_timeout = 30
         http.use_ssl = uri.is_a?(URI::HTTPS)
         http.set_debug_output(Net::Hippie.logger)
-        http.cert = OpenSSL::X509::Certificate.new(certificate) if certificate
-        if key
-          http.key = passphrase ? OpenSSL::PKey::RSA.new(key, passphrase) : OpenSSL::PKey::RSA.new(key)
+        if certificate && key
+          http.cert = OpenSSL::X509::Certificate.new(certificate) if certificate
+          http.key = private_key
         end
         http
       end
@@ -82,6 +84,14 @@ module Net
 
       def normalize_uri(uri)
         uri.is_a?(URI) ? uri : URI.parse(uri)
+      end
+
+      def private_key
+        if passphrase
+          OpenSSL::PKey::RSA.new(key, passphrase)
+        else
+          OpenSSL::PKey::RSA.new(key)
+        end
       end
     end
   end

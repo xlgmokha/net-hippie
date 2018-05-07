@@ -8,6 +8,7 @@ require 'net/hippie/json_mapper'
 require 'net/hippie/client'
 
 module Net
+  # net/http for hippies.
   module Hippie
     def self.logger
       @logger ||= Logger.new(STDOUT)

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Net::Hippie::ClientTest < Minitest::Test
+class ClientTest < Minitest::Test
   attr_reader :subject
 
   def initialize(*args)
