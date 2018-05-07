@@ -9,57 +9,15 @@ http_interactions:
     headers:
       Accept:
       - application/vnd.haveibeenpwned.v2+json
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      User-Agent:
-      - Ruby
-      Host:
-      - haveibeenpwned.com
   response:
     status:
       code: 200
       message: OK
     headers:
-      Date:
-      - Mon, 07 May 2018 19:45:30 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
       - chunked
-      Connection:
-      - keep-alive
-      Set-Cookie:
-      - __cfduid=d4c4508f4d7bfc5e0eea68f40ada751a61525722330; expires=Tue, 07-May-19
-        19:45:30 GMT; path=/; domain=.haveibeenpwned.com; HttpOnly
-      Cache-Control:
-      - public, max-age=300
-      Vary:
-      - Accept-Encoding
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains; preload
-      X-Frame-Options:
-      - Deny
-      X-Content-Type-Options:
-      - nosniff
-      X-Xss-Protection:
-      - 1; mode=block
-      Content-Security-Policy:
-      - default-src 'none';script-src 'self' 'unsafe-inline' www.google-analytics.com
-        www.google.com www.gstatic.com cdnjs.cloudflare.com az416426.vo.msecnd.net;style-src
-        'self' 'unsafe-inline' cdnjs.cloudflare.com;img-src 'self' www.google-analytics.com
-        stats.g.doubleclick.net www.gstatic.com;font-src 'self' cdnjs.cloudflare.com
-        fonts.gstatic.com;connect-src 'self' api.pwnedpasswords.com www.google-analytics.com
-        stats.g.doubleclick.net dc.services.visualstudio.com;base-uri 'self';child-src
-        www.google.com;form-action 'self' accounts.google.com www.paypal.com;frame-ancestors
-        'none';upgrade-insecure-requests;report-uri https://troyhunt.report-uri.com/r/d/csp/enforce
-      Request-Context:
-      - appId=cid-v1:bcc569a3-d364-4306-8bbe-83e9fe4d020e
-      Expect-Ct:
-      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
-      Server:
-      - cloudflare
-      Cf-Ray:
-      - 41762ff52b3329fb-SEA
     body:
       encoding: ASCII-8BIT
       string: !binary |-
