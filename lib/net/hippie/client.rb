@@ -18,6 +18,7 @@ module Net
         @default_headers = headers
         @key = key
         @mapper = mapper
+        @passphrase = passphrase
       end
 
       def execute(uri, request)
@@ -68,11 +69,7 @@ module Net
         http.set_debug_output(Net::Hippie.logger)
         http.cert = OpenSSL::X509::Certificate.new(certificate) if certificate
         if key
-          http.key = if passphrase
-                       OpenSSL::PKey::RSA.new(key, passphrase)
-                     else
-                       OpenSSL::PKey::RSA.new(key)
-                     end
+          http.key = passphrase ? OpenSSL::PKey::RSA.new(key, passphrase) : OpenSSL::PKey::RSA.new(key)
         end
         http
       end
