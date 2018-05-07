@@ -5,9 +5,7 @@ class Net::Hippie::ClientTest < Minitest::Test
 
   def initialize(*args)
     super
-    @subject = Net::Hippie::Client.new(headers: {
-      'Accept' => 'application/vnd.haveibeenpwned.v2+json'
-    })
+    @subject = Net::Hippie::Client.new
   end
 
   def test_get
@@ -31,7 +29,7 @@ class Net::Hippie::ClientTest < Minitest::Test
   end
 
   def test_get_with_headers
-    headers = { 'User-Agent' => 'example/agent' }
+    headers = { 'Accept' => 'application/vnd.haveibeenpwned.v2+json' }
     WebMock.stub_request(:get, 'https://haveibeenpwned.com/api/breaches')
       .with(headers: headers)
       .to_return(status: 201, body: {}.to_json)

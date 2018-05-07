@@ -26,12 +26,21 @@ require 'net/hippie'
 
 Net::Hippie.logger = Rails.logger
 
-client = Net::Hippie::Client.new(headers: {
+client = Net::Hippie::Client.new
+
+headers = {
   'Accept' => 'application/vnd.haveibeenpwned.v2+json'
-})
+}
 
-response = client.get(URI.parse('https://haveibeenpwned.com/api/breaches'))
+uri = URI.parse('https://haveibeenpwned.com/api/breaches')
+response = client.get(uri, headers: headers)
+puts JSON.parse(response.body)
+```
 
+```ruby
+client = Net::Hippie::Client.new
+body = { user: { name: 'hippie' } }
+response = client.post(URI.parse('https://example.com'), body: body)
 puts JSON.parse(response.body)
 ```
 

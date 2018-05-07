@@ -8,14 +8,13 @@ module Net
       }
 
       def initialize(
-        headers: {},
         certificate: nil,
         key: nil,
         passphrase: nil,
         mapper: JsonMapper.new
       )
         @certificate = certificate
-        @default_headers = DEFAULT_HEADERS.merge(headers)
+        @default_headers = DEFAULT_HEADERS
         @key = key
         @mapper = mapper
       end
