@@ -29,4 +29,46 @@ class Net::Hippie::ClientTest < Minitest::Test
       assert_equal(283, JSON.parse(@response.body).count)
     end
   end
+
+  def test_post
+    VCR.use_cassette("post_breaches") do
+      uri = URI.parse('https://haveibeenpwned.com/api/breaches')
+      response = subject.post(uri)
+      refute_nil response
+      assert_equal "Congratulations!", JSON.parse(response.body)["Message"]
+    end
+  end
+
+  def test_post_with_block_syntax
+    VCR.use_cassette("post_breaches") do
+      uri = URI.parse('https://haveibeenpwned.com/api/breaches')
+      subject.post(uri) do |request, response|
+        @response = response
+      end
+      refute_nil @response
+      assert_equal "Congratulations!", JSON.parse(@response.body)["Message"]
+    end
+  end
+
+  def test_put
+    VCR.use_cassette("put_breaches") do
+      uri = URI.parse('https://haveibeenpwned.com/api/breaches')
+      body = { command: 'echo hello' }.to_json
+      response = subject.put(uri, body: body)
+      refute_nil response
+      assert_equal "Congratulations!", JSON.parse(response.body)["Message"]
+    end
+  end
+
+  def test_put_with_block_syntax
+    VCR.use_cassette("put_breaches") do
+      uri = URI.parse('https://haveibeenpwned.com/api/breaches')
+      body = { command: 'echo hello' }.to_json
+      subject.put(uri, body: body) do |request, response|
+        @response = response
+      end
+      refute_nil @response
+      assert_equal "Congratulations!", JSON.parse(@response.body)["Message"]
+    end
+  end
 end
