@@ -17,6 +17,14 @@ class Net::Hippie::ClientTest < Minitest::Test
     end
   end
 
+  def test_get_with_string_uri
+    VCR.use_cassette("get_breaches") do
+      response = subject.get('https://haveibeenpwned.com/api/breaches')
+      refute_nil response
+      assert_equal(283, JSON.parse(response.body).count)
+    end
+  end
+
   def test_get_with_block_syntax
     VCR.use_cassette("get_breaches") do
       uri = URI.parse('https://haveibeenpwned.com/api/breaches')

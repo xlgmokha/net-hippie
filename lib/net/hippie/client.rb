@@ -60,6 +60,7 @@ module Net
       attr_reader :mapper
 
       def http_for(uri)
+        uri = normalize_uri(uri)
         http = Net::HTTP.new(uri.host, uri.port)
         http.read_timeout = 30
         http.use_ssl = uri.is_a?(URI::HTTPS)
@@ -79,6 +80,10 @@ module Net
         type.new(uri, default_headers.merge(headers)).tap do |x|
           x.body = mapper.map_from(body) unless body.empty?
         end
+      end
+
+      def normalize_uri(uri)
+        uri.is_a?(URI) ? uri : URI.parse(uri)
       end
     end
   end
