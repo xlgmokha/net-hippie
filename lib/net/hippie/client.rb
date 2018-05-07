@@ -9,12 +9,13 @@ module Net
 
       def initialize(
         certificate: nil,
+        headers: DEFAULT_HEADERS,
         key: nil,
-        passphrase: nil,
-        mapper: JsonMapper.new
+        mapper: JsonMapper.new,
+        passphrase: nil
       )
         @certificate = certificate
-        @default_headers = DEFAULT_HEADERS
+        @default_headers = headers
         @key = key
         @mapper = mapper
       end
