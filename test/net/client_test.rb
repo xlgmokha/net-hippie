@@ -43,6 +43,19 @@ class Net::Hippie::ClientTest < Minitest::Test
     assert_equal response.class, Net::HTTPCreated
   end
 
+  def test_get_with_body
+    uri = URI.parse('https://haveibeenpwned.com/api/breaches')
+    body = { 'hello' => 'world' }
+    WebMock.stub_request(:get, uri.to_s)
+      .with(body: body.to_json)
+      .to_return(status: 201, body: {}.to_json)
+
+    response = subject.get(uri, body: body)
+
+    refute_nil response
+    assert_equal response.class, Net::HTTPCreated
+  end
+
   def test_post
     VCR.use_cassette("post_breaches") do
       uri = URI.parse('https://haveibeenpwned.com/api/breaches')
