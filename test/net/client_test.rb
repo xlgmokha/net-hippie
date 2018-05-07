@@ -30,6 +30,19 @@ class Net::Hippie::ClientTest < Minitest::Test
     end
   end
 
+  def test_get_with_headers
+    headers = { 'User-Agent' => 'example/agent' }
+    WebMock.stub_request(:get, 'https://haveibeenpwned.com/api/breaches')
+      .with(headers: headers)
+      .to_return(status: 201, body: {}.to_json)
+
+    uri = URI.parse('https://haveibeenpwned.com/api/breaches')
+
+    response = subject.get(uri, headers: headers)
+    refute_nil response
+    assert_equal response.class, Net::HTTPCreated
+  end
+
   def test_post
     VCR.use_cassette("post_breaches") do
       uri = URI.parse('https://haveibeenpwned.com/api/breaches')
