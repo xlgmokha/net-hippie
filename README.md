@@ -1,8 +1,7 @@
 # Net::Hippie
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/net/hippie`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Net::Hippie is a light weight wrapper around `net/http` that defaults to
+sending JSON messages.
 
 ## Installation
 
@@ -22,7 +21,38 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'net/hippie'
+
+Net::Hippie.logger = Rails.logger
+
+client = Net::Hippie::Client.new(headers: {
+  'Accept' => 'application/vnd.haveibeenpwned.v2+json'
+})
+
+response = client.get(URI.parse('https://haveibeenpwned.com/api/breaches'))
+
+puts JSON.parse(response.body)
+```
+
+Net::Hippie also supports TLS with client authentication.
+
+```ruby
+client = Net::Hippie::Client.new(
+  certificate: ENV['CLIENT_CERTFICIATE'],
+  key: ENV['CLIENT_KEY']
+)
+```
+
+If your private key is encrypted you may include a passphrase to decrypt it.
+
+```ruby
+client = Net::Hippie::Client.new(
+  certificate: ENV['CLIENT_CERTFICIATE'],
+  key: ENV['CLIENT_KEY'],
+  passphrase: ENV['CLIENT_KEY_PASSPHRASE']
+)
+```
 
 ## Development
 
@@ -32,7 +62,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/net-hippie.
+Bug reports and pull requests are welcome on GitHub at https://github.com/mokhan/net-hippie.
 
 ## License
 

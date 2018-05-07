@@ -7,7 +7,13 @@ module Net
         'User-Agent' => "net/hippie #{Net::Hippie::VERSION}",
       }
 
-      def initialize(headers: DEFAULT_HEADERS, certificate: nil, key: nil, mapper: JsonMapper.new)
+      def initialize(
+        headers: DEFAULT_HEADERS,
+        certificate: nil,
+        key: nil,
+        passphrase: nil,
+        mapper: JsonMapper.new
+      )
         @certificate = certificate
         @default_headers = headers
         @key = key
@@ -50,7 +56,8 @@ module Net
 
       private
 
-      attr_reader :default_headers, :certificate, :key
+      attr_reader :default_headers
+      attr_reader :certificate, :key, :passphrase
       attr_reader :mapper
 
       def http_for(uri)
@@ -59,7 +66,13 @@ module Net
         http.use_ssl = uri.is_a?(URI::HTTPS)
         http.set_debug_output(Net::Hippie.logger)
         http.cert = OpenSSL::X509::Certificate.new(certificate) if certificate
-        http.key = OpenSSL::PKey::RSA.new(key) if key
+        if key
+          if passphrase
+            http.key = OpenSSL::PKey::RSA.new(key, passphrase)
+          else
+            http.key = OpenSSL::PKey::RSA.new(key)
+          end
+        end
         http
       end
 
