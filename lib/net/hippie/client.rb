@@ -7,10 +7,11 @@ module Net
         'User-Agent' => "net/hippie #{Net::Hippie::VERSION}",
       }
 
-      def initialize(headers: DEFAULT_HEADERS, certificate: nil, key: nil)
+      def initialize(headers: DEFAULT_HEADERS, certificate: nil, key: nil, mapper: JsonMapper.new)
         @certificate = certificate
         @default_headers = headers
         @key = key
+        @mapper = mapper
       end
 
       def execute(uri, request)
@@ -50,6 +51,7 @@ module Net
       private
 
       attr_reader :default_headers, :certificate, :key
+      attr_reader :mapper
 
       def http_for(uri)
         http = Net::HTTP.new(uri.host, uri.port)
@@ -63,12 +65,8 @@ module Net
 
       def request_for(type, uri, headers: {}, body: {})
         type.new(uri, default_headers.merge(headers)).tap do |x|
-          x.body = map_from(body) unless body.empty?
+          x.body = mapper.map_from(body) unless body.empty?
         end
-      end
-
-      def map_from(hash)
-        JSON.generate(hash)
       end
     end
   end
