@@ -18,7 +18,7 @@ module Net
       end
 
       def get(uri, headers: {}, body: {})
-        request = get_for(uri, headers: headers, body: body)
+        request = request_for(Net::HTTP::Get, uri, headers: headers, body: body)
         response = execute(uri, request)
         if block_given?
           yield request, response
@@ -28,7 +28,7 @@ module Net
       end
 
       def post(uri, headers: {}, body: {})
-        request = post_for(uri, headers: headers, body: body)
+        request = request_for(Net::HTTP::Post, uri, headers: headers, body: body)
         response = execute(uri, request)
         if block_given?
           yield request, response
@@ -38,7 +38,7 @@ module Net
       end
 
       def put(uri, headers: {}, body: {})
-        request = put_for(uri, headers: headers, body: body)
+        request = request_for(Net::HTTP::Put, uri, headers: headers, body: body)
         response = execute(uri, request)
         if block_given?
           yield request, response
@@ -61,20 +61,8 @@ module Net
         http
       end
 
-      def post_for(uri, headers: {}, body: {})
-        Net::HTTP::Post.new(uri, default_headers.merge(headers)).tap do |x|
-          x.body = JSON.generate(body)
-        end
-      end
-
-      def put_for(uri, headers: {}, body: {})
-        Net::HTTP::Put.new(uri, default_headers.merge(headers)).tap do |x|
-          x.body = JSON.generate(body)
-        end
-      end
-
-      def get_for(uri, headers: {}, body: {})
-        Net::HTTP::Get.new(uri, default_headers.merge(headers)).tap do |x|
+      def request_for(type, uri, headers: {}, body: {})
+        type.new(uri, default_headers.merge(headers)).tap do |x|
           x.body = JSON.generate(body) unless body.empty?
         end
       end
