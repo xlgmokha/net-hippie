@@ -63,8 +63,12 @@ module Net
 
       def request_for(type, uri, headers: {}, body: {})
         type.new(uri, default_headers.merge(headers)).tap do |x|
-          x.body = JSON.generate(body) unless body.empty?
+          x.body = map_from(body) unless body.empty?
         end
+      end
+
+      def map_from(hash)
+        JSON.generate(hash)
       end
     end
   end
