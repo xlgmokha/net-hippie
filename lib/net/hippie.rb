@@ -1,11 +1,11 @@
-require "json"
-require "logger"
-require "net/http"
-require "openssl"
+require 'json'
+require 'logger'
+require 'net/http'
+require 'openssl'
 
-require "net/hippie/version"
-require "net/hippie/json_mapper"
-require "net/hippie/client"
+require 'net/hippie/version'
+require 'net/hippie/json_mapper'
+require 'net/hippie/client'
 
 module Net
   module Hippie

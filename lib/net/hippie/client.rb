@@ -4,8 +4,8 @@ module Net
       DEFAULT_HEADERS = {
         'Accept' => 'application/json',
         'Content-Type' => 'application/json',
-        'User-Agent' => "net/hippie #{Net::Hippie::VERSION}",
-      }
+        'User-Agent' => "net/hippie #{Net::Hippie::VERSION}"
+      }.freeze
 
       def initialize(
         certificate: nil,
@@ -68,11 +68,11 @@ module Net
         http.set_debug_output(Net::Hippie.logger)
         http.cert = OpenSSL::X509::Certificate.new(certificate) if certificate
         if key
-          if passphrase
-            http.key = OpenSSL::PKey::RSA.new(key, passphrase)
-          else
-            http.key = OpenSSL::PKey::RSA.new(key)
-          end
+          http.key = if passphrase
+                       OpenSSL::PKey::RSA.new(key, passphrase)
+                     else
+                       OpenSSL::PKey::RSA.new(key)
+                     end
         end
         http
       end

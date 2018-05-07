@@ -9,7 +9,7 @@ class Net::Hippie::ClientTest < Minitest::Test
   end
 
   def test_get
-    VCR.use_cassette("get_breaches") do
+    VCR.use_cassette('get_breaches') do
       uri = URI.parse('https://haveibeenpwned.com/api/breaches')
       response = subject.get(uri)
       refute_nil response
@@ -18,7 +18,7 @@ class Net::Hippie::ClientTest < Minitest::Test
   end
 
   def test_get_with_string_uri
-    VCR.use_cassette("get_breaches") do
+    VCR.use_cassette('get_breaches') do
       response = subject.get('https://haveibeenpwned.com/api/breaches')
       refute_nil response
       assert_equal(283, JSON.parse(response.body).count)
@@ -26,9 +26,9 @@ class Net::Hippie::ClientTest < Minitest::Test
   end
 
   def test_get_with_block_syntax
-    VCR.use_cassette("get_breaches") do
+    VCR.use_cassette('get_breaches') do
       uri = URI.parse('https://haveibeenpwned.com/api/breaches')
-      subject.get(uri) do |request, response|
+      subject.get(uri) do |_request, response|
         @response = response
       end
       refute_nil @response
@@ -39,8 +39,8 @@ class Net::Hippie::ClientTest < Minitest::Test
   def test_get_with_headers
     headers = { 'Accept' => 'application/vnd.haveibeenpwned.v2+json' }
     WebMock.stub_request(:get, 'https://haveibeenpwned.com/api/breaches')
-      .with(headers: headers)
-      .to_return(status: 201, body: {}.to_json)
+           .with(headers: headers)
+           .to_return(status: 201, body: {}.to_json)
 
     uri = URI.parse('https://haveibeenpwned.com/api/breaches')
 
@@ -53,8 +53,8 @@ class Net::Hippie::ClientTest < Minitest::Test
     uri = URI.parse('https://haveibeenpwned.com/api/breaches')
     body = { 'hello' => 'world' }
     WebMock.stub_request(:get, uri.to_s)
-      .with(body: body.to_json)
-      .to_return(status: 201, body: {}.to_json)
+           .with(body: body.to_json)
+           .to_return(status: 201, body: {}.to_json)
 
     response = subject.get(uri, body: body)
 
@@ -63,44 +63,44 @@ class Net::Hippie::ClientTest < Minitest::Test
   end
 
   def test_post
-    VCR.use_cassette("post_breaches") do
+    VCR.use_cassette('post_breaches') do
       uri = URI.parse('https://haveibeenpwned.com/api/breaches')
       response = subject.post(uri)
       refute_nil response
-      assert_equal "Congratulations!", JSON.parse(response.body)["Message"]
+      assert_equal 'Congratulations!', JSON.parse(response.body)['Message']
     end
   end
 
   def test_post_with_block_syntax
-    VCR.use_cassette("post_breaches") do
+    VCR.use_cassette('post_breaches') do
       uri = URI.parse('https://haveibeenpwned.com/api/breaches')
-      subject.post(uri) do |request, response|
+      subject.post(uri) do |_request, response|
         @response = response
       end
       refute_nil @response
-      assert_equal "Congratulations!", JSON.parse(@response.body)["Message"]
+      assert_equal 'Congratulations!', JSON.parse(@response.body)['Message']
     end
   end
 
   def test_put
-    VCR.use_cassette("put_breaches") do
+    VCR.use_cassette('put_breaches') do
       uri = URI.parse('https://haveibeenpwned.com/api/breaches')
       body = { command: 'echo hello' }.to_json
       response = subject.put(uri, body: body)
       refute_nil response
-      assert_equal "Congratulations!", JSON.parse(response.body)["Message"]
+      assert_equal 'Congratulations!', JSON.parse(response.body)['Message']
     end
   end
 
   def test_put_with_block_syntax
-    VCR.use_cassette("put_breaches") do
+    VCR.use_cassette('put_breaches') do
       uri = URI.parse('https://haveibeenpwned.com/api/breaches')
       body = { command: 'echo hello' }.to_json
-      subject.put(uri, body: body) do |request, response|
+      subject.put(uri, body: body) do |_request, response|
         @response = response
       end
       refute_nil @response
-      assert_equal "Congratulations!", JSON.parse(@response.body)["Message"]
+      assert_equal 'Congratulations!', JSON.parse(@response.body)['Message']
     end
   end
 end
