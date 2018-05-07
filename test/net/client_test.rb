@@ -18,4 +18,15 @@ class Net::Hippie::ClientTest < Minitest::Test
       assert_equal(283, JSON.parse(response.body).count)
     end
   end
+
+  def test_get_with_block_syntax
+    VCR.use_cassette("get_breaches") do
+      uri = URI.parse('https://haveibeenpwned.com/api/breaches')
+      subject.get(uri) do |request, response|
+        @response = response
+      end
+      refute_nil @response
+      assert_equal(283, JSON.parse(@response.body).count)
+    end
+  end
 end
