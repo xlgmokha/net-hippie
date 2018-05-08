@@ -6,6 +6,7 @@ require 'openssl'
 require 'net/hippie/version'
 require 'net/hippie/json_mapper'
 require 'net/hippie/client'
+require 'net/hippie/api'
 
 module Net
   # net/http for hippies.
