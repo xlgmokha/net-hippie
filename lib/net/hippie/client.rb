@@ -8,24 +8,25 @@ module Net
         'User-Agent' => "net/hippie #{Net::Hippie::VERSION}"
       }.freeze
 
+      attr_accessor :mapper
+
       def initialize(
         certificate: nil,
         headers: DEFAULT_HEADERS,
         key: nil,
-        mapper: JsonMapper.new,
         passphrase: nil,
         verify_mode: nil
       )
         @certificate = certificate
         @default_headers = headers
         @key = key
-        @mapper = mapper
+        @mapper = JsonMapper.new
         @passphrase = passphrase
         @verify_mode = verify_mode
       end
 
       def execute(uri, request)
-        http_for(uri).request(request)
+        http_for(normalize_uri(uri)).request(request)
       end
 
       def get(uri, headers: {}, body: {})
@@ -64,10 +65,8 @@ module Net
       attr_reader :default_headers
       attr_reader :verify_mode
       attr_reader :certificate, :key, :passphrase
-      attr_reader :mapper
 
       def http_for(uri)
-        uri = normalize_uri(uri)
         http = Net::HTTP.new(uri.host, uri.port)
         http.read_timeout = 30
         http.use_ssl = uri.is_a?(URI::HTTPS)

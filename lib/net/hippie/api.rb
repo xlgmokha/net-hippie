@@ -1,5 +1,6 @@
 module Net
   module Hippie
+    # A no nonsense class to perform HTTP requests.
     class Api
       attr_reader :uri, :verify_mode
 
