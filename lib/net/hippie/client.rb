@@ -13,13 +13,15 @@ module Net
         headers: DEFAULT_HEADERS,
         key: nil,
         mapper: JsonMapper.new,
-        passphrase: nil
+        passphrase: nil,
+        verify_mode: nil
       )
         @certificate = certificate
         @default_headers = headers
         @key = key
         @mapper = mapper
         @passphrase = passphrase
+        @verify_mode = verify_mode
       end
 
       def execute(uri, request)
@@ -60,6 +62,7 @@ module Net
       private
 
       attr_reader :default_headers
+      attr_reader :verify_mode
       attr_reader :certificate, :key, :passphrase
       attr_reader :mapper
 
@@ -68,6 +71,7 @@ module Net
         http = Net::HTTP.new(uri.host, uri.port)
         http.read_timeout = 30
         http.use_ssl = uri.is_a?(URI::HTTPS)
+        http.verify_mode = verify_mode
         http.set_debug_output(Net::Hippie.logger)
         if certificate && key
           http.cert = OpenSSL::X509::Certificate.new(certificate) if certificate
