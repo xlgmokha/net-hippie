@@ -26,12 +26,7 @@ module Net
       end
 
       def execute(uri, request)
-        http_for(normalize_uri(uri)).request(request)
-      end
-
-      def get(uri, headers: {}, body: {})
-        request = request_for(Net::HTTP::Get, uri, headers: headers, body: body)
-        response = execute(uri, request)
+        response = http_for(normalize_uri(uri)).request(request)
         if block_given?
           yield request, response
         else
@@ -39,25 +34,20 @@ module Net
         end
       end
 
-      def post(uri, headers: {}, body: {})
+      def get(uri, headers: {}, body: {}, &block)
+        request = request_for(Net::HTTP::Get, uri, headers: headers, body: body)
+        execute(uri, request, &block)
+      end
+
+      def post(uri, headers: {}, body: {}, &block)
         type = Net::HTTP::Post
         request = request_for(type, uri, headers: headers, body: body)
-        response = execute(uri, request)
-        if block_given?
-          yield request, response
-        else
-          response
-        end
+        execute(uri, request, &block)
       end
 
-      def put(uri, headers: {}, body: {})
+      def put(uri, headers: {}, body: {}, &block)
         request = request_for(Net::HTTP::Put, uri, headers: headers, body: body)
-        response = execute(uri, request)
-        if block_given?
-          yield request, response
-        else
-          response
-        end
+        execute(uri, request, &block)
       end
 
       private
