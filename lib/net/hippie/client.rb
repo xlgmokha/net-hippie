@@ -20,7 +20,7 @@ module Net
         @certificate = certificate
         @default_headers = headers
         @key = key
-        @mapper = JsonMapper.new
+        @mapper = ContentTypeMapper.new
         @passphrase = passphrase
         @verify_mode = verify_mode
       end
@@ -70,8 +70,9 @@ module Net
       end
 
       def request_for(type, uri, headers: {}, body: {})
-        type.new(uri, default_headers.merge(headers)).tap do |x|
-          x.body = mapper.map_from(body) unless body.empty?
+        final_headers = default_headers.merge(headers)
+        type.new(uri, final_headers).tap do |x|
+          x.body = mapper.map_from(final_headers, body) unless body.empty?
         end
       end
 

@@ -4,7 +4,7 @@ require 'net/http'
 require 'openssl'
 
 require 'net/hippie/version'
-require 'net/hippie/json_mapper'
+require 'net/hippie/content_type_mapper'
 require 'net/hippie/client'
 require 'net/hippie/api'
 
