@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Net
   module Hippie
     # A no nonsense class to perform HTTP requests.

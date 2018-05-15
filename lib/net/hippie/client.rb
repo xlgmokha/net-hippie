@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Net
   module Hippie
     # A simple client for connecting with http resources.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Net
   module Hippie
     # Converts a ruby hash into a JSON string

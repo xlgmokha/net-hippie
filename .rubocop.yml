@@ -1,0 +1,8 @@
+AllCops:
+  Exclude:
+    - 'coverage/**/*'
+    - 'pkg/**/*'
+    - 'test/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+  TargetRubyVersion: 2.5
