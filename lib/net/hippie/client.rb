@@ -52,6 +52,11 @@ module Net
         execute(uri, request, &block)
       end
 
+      def delete(uri, headers: {}, body: {}, &block)
+        request = request_for(Net::HTTP::Delete, uri, headers: headers, body: body)
+        execute(uri, request, &block)
+      end
+
       private
 
       attr_reader :default_headers

@@ -104,6 +104,15 @@ class ClientTest < Minitest::Test
     end
   end
 
+  def test_delete
+    uri = URI.parse('https://haveibeenpwned.com/api/breaches')
+    VCR.use_cassette('delete_breaches') do
+      response = subject.delete(uri)
+      refute_nil response
+      assert_equal 'Congratulations!', JSON.parse(response.body)['Message']
+    end
+  end
+
   def test_client_tls
     private_key = OpenSSL::PKey::RSA.new(2048)
     certificate = OpenSSL::X509::Certificate.new
