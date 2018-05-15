@@ -62,10 +62,7 @@ module Net
         http.use_ssl = uri.is_a?(URI::HTTPS)
         http.verify_mode = verify_mode
         http.set_debug_output(Net::Hippie.logger)
-        if certificate && key
-          http.cert = OpenSSL::X509::Certificate.new(certificate) if certificate
-          http.key = private_key
-        end
+        apply_client_tls_to(http)
         http
       end
 
@@ -86,6 +83,13 @@ module Net
         else
           OpenSSL::PKey::RSA.new(key)
         end
+      end
+
+      def apply_client_tls_to(http)
+        return if certificate.nil? || key.nil?
+
+        http.cert = OpenSSL::X509::Certificate.new(certificate) if certificate
+        http.key = private_key
       end
     end
   end

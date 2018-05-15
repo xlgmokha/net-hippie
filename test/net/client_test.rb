@@ -39,8 +39,8 @@ class ClientTest < Minitest::Test
   def test_get_with_headers
     headers = { 'Accept' => 'application/vnd.haveibeenpwned.v2+json' }
     WebMock.stub_request(:get, 'https://haveibeenpwned.com/api/breaches')
-           .with(headers: headers)
-           .to_return(status: 201, body: {}.to_json)
+      .with(headers: headers)
+      .to_return(status: 201, body: {}.to_json)
 
     uri = URI.parse('https://haveibeenpwned.com/api/breaches')
 
@@ -53,8 +53,8 @@ class ClientTest < Minitest::Test
     uri = URI.parse('https://haveibeenpwned.com/api/breaches')
     body = { 'hello' => 'world' }
     WebMock.stub_request(:get, uri.to_s)
-           .with(body: body.to_json)
-           .to_return(status: 201, body: {}.to_json)
+      .with(body: body.to_json)
+      .to_return(status: 201, body: {}.to_json)
 
     response = subject.get(uri, body: body)
 
@@ -102,5 +102,26 @@ class ClientTest < Minitest::Test
       refute_nil @response
       assert_equal 'Congratulations!', JSON.parse(@response.body)['Message']
     end
+  end
+
+  def test_client_tls
+    private_key = OpenSSL::PKey::RSA.new(2048)
+    certificate = OpenSSL::X509::Certificate.new
+    certificate.not_after = certificate.not_before = Time.now
+    certificate.public_key = private_key.public_key
+    certificate.sign(private_key, OpenSSL::Digest::SHA256.new)
+
+    subject = Net::Hippie::Client.new(certificate: certificate.to_pem, key: private_key.export)
+    uri = URI.parse('https://haveibeenpwned.com/api/breaches')
+
+    @called = false
+    VCR.use_cassette('get_breaches') do
+      subject.get(uri) do |_request, response|
+        @called = true
+        refute_nil response
+        assert_equal '000webhost', JSON.parse(response.body)[0]['Title']
+      end
+    end
+    assert(@called)
   end
 end
