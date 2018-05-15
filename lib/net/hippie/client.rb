@@ -77,18 +77,14 @@ module Net
         uri.is_a?(URI) ? uri : URI.parse(uri)
       end
 
-      def private_key
-        if passphrase
-          OpenSSL::PKey::RSA.new(key, passphrase)
-        else
-          OpenSSL::PKey::RSA.new(key)
-        end
+      def private_key(type = OpenSSL::PKey::RSA)
+        passphrase ? type.new(key, passphrase) : type.new(key)
       end
 
       def apply_client_tls_to(http)
         return if certificate.nil? || key.nil?
 
-        http.cert = OpenSSL::X509::Certificate.new(certificate) if certificate
+        http.cert = OpenSSL::X509::Certificate.new(certificate)
         http.key = private_key
       end
     end
