@@ -20,7 +20,7 @@ class ContentTypeMapperTest < Minitest::Test
   def test_return_html
     subject = Net::Hippie::ContentTypeMapper.new
     headers = { 'Content-Type' => 'text/html' }
-    body = "<html></html>"
+    body = '<html></html>'
     result = subject.map_from(headers, body)
     assert_equal body, result
   end

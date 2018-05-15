@@ -39,8 +39,8 @@ class ClientTest < Minitest::Test
   def test_get_with_headers
     headers = { 'Accept' => 'application/vnd.haveibeenpwned.v2+json' }
     WebMock.stub_request(:get, 'https://haveibeenpwned.com/api/breaches')
-      .with(headers: headers)
-      .to_return(status: 201, body: {}.to_json)
+           .with(headers: headers)
+           .to_return(status: 201, body: {}.to_json)
 
     uri = URI.parse('https://haveibeenpwned.com/api/breaches')
 
@@ -53,8 +53,8 @@ class ClientTest < Minitest::Test
     uri = URI.parse('https://haveibeenpwned.com/api/breaches')
     body = { 'hello' => 'world' }
     WebMock.stub_request(:get, uri.to_s)
-      .with(body: body.to_json)
-      .to_return(status: 201, body: {}.to_json)
+           .with(body: body.to_json)
+           .to_return(status: 201, body: {}.to_json)
 
     response = subject.get(uri, body: body)
 
@@ -136,7 +136,7 @@ class ClientTest < Minitest::Test
     subject = Net::Hippie::Client.new(
       certificate: certificate.to_pem,
       key: private_key.export(OpenSSL::Cipher.new('AES-256-CBC'), passphrase),
-      passphrase: passphrase,
+      passphrase: passphrase
     )
     uri = URI.parse('https://haveibeenpwned.com/api/breaches')
 

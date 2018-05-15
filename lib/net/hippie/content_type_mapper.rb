@@ -4,7 +4,7 @@ module Net
     class ContentTypeMapper
       def map_from(headers, body)
         content_type = headers['Content-Type'] || ''
-        return JSON.generate(body) if content_type.include?("json")
+        return JSON.generate(body) if content_type.include?('json')
         body
       end
     end
