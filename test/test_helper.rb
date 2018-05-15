@@ -1,5 +1,6 @@
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'net/hippie'
+require 'securerandom'
 require 'vcr'
 require 'webmock'
 

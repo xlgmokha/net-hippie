@@ -124,4 +124,30 @@ class ClientTest < Minitest::Test
     end
     assert(@called)
   end
+
+  def test_client_tls_with_passphrase
+    private_key = OpenSSL::PKey::RSA.new(2048)
+    passphrase = SecureRandom.hex(16)
+    certificate = OpenSSL::X509::Certificate.new
+    certificate.not_after = certificate.not_before = Time.now
+    certificate.public_key = private_key.public_key
+    certificate.sign(private_key, OpenSSL::Digest::SHA256.new)
+
+    subject = Net::Hippie::Client.new(
+      certificate: certificate.to_pem,
+      key: private_key.export(OpenSSL::Cipher.new('AES-256-CBC'), passphrase),
+      passphrase: passphrase,
+    )
+    uri = URI.parse('https://haveibeenpwned.com/api/breaches')
+
+    @called = false
+    VCR.use_cassette('get_breaches') do
+      subject.get(uri) do |_request, response|
+        @called = true
+        refute_nil response
+        assert_equal '000webhost', JSON.parse(response.body)[0]['Title']
+      end
+    end
+    assert(@called)
+  end
 end
