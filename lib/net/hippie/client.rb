@@ -53,7 +53,8 @@ module Net
       end
 
       def delete(uri, headers: {}, body: {}, &block)
-        request = request_for(Net::HTTP::Delete, uri, headers: headers, body: body)
+        type = Net::HTTP::Delete
+        request = request_for(type, uri, headers: headers, body: body)
         execute(uri, request, &block)
       end
 
