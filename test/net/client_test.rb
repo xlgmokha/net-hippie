@@ -25,6 +25,15 @@ class ClientTest < Minitest::Test
     end
   end
 
+  def test_get_with_generic_uri
+    VCR.use_cassette('get_breaches') do
+      uri = URI::Generic.build(host: 'haveibeenpwned.com', scheme: 'https', path: '/api/breaches', port: 443)
+      response = subject.get(uri)
+      refute_nil response
+      assert_equal(283, JSON.parse(response.body).count)
+    end
+  end
+
   def test_get_with_block_syntax
     VCR.use_cassette('get_breaches') do
       uri = URI.parse('https://haveibeenpwned.com/api/breaches')

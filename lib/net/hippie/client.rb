@@ -67,7 +67,7 @@ module Net
       def http_for(uri)
         http = Net::HTTP.new(uri.host, uri.port)
         http.read_timeout = 30
-        http.use_ssl = uri.is_a?(URI::HTTPS)
+        http.use_ssl = uri.scheme == "https"
         http.verify_mode = verify_mode
         http.set_debug_output(Net::Hippie.logger)
         apply_client_tls_to(http)
@@ -76,7 +76,7 @@ module Net
 
       def request_for(type, uri, headers: {}, body: {})
         final_headers = default_headers.merge(headers)
-        type.new(uri, final_headers).tap do |x|
+        type.new(uri.to_s, final_headers).tap do |x|
           x.body = mapper.map_from(final_headers, body) unless body.empty?
         end
       end
