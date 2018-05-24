@@ -67,7 +67,7 @@ module Net
       def http_for(uri)
         http = Net::HTTP.new(uri.host, uri.port)
         http.read_timeout = 30
-        http.use_ssl = uri.scheme == "https"
+        http.use_ssl = uri.scheme == 'https'
         http.verify_mode = verify_mode
         http.set_debug_output(Net::Hippie.logger)
         apply_client_tls_to(http)
