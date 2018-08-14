@@ -11,6 +11,7 @@ module Net
       }.freeze
 
       attr_accessor :mapper
+      attr_accessor :read_timeout
 
       def initialize(
         certificate: nil,
@@ -24,6 +25,7 @@ module Net
         @key = key
         @mapper = ContentTypeMapper.new
         @passphrase = passphrase
+        @read_timeout = 30
         @verify_mode = verify_mode
       end
 
@@ -66,7 +68,7 @@ module Net
 
       def http_for(uri)
         http = Net::HTTP.new(uri.host, uri.port)
-        http.read_timeout = 30
+        http.read_timeout = read_timeout
         http.use_ssl = uri.scheme == 'https'
         http.verify_mode = verify_mode
         http.set_debug_output(Net::Hippie.logger)
