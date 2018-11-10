@@ -40,7 +40,7 @@ puts JSON.parse(response.body)
 ```ruby
 client = Net::Hippie::Client.new
 body = { user: { name: 'hippie' } }
-response = client.post(URI.parse('https://example.com'), body: body)
+response = client.post(URI.parse('https://example.org'), body: body)
 puts JSON.parse(response.body)
 ```
 
@@ -61,6 +61,22 @@ client = Net::Hippie::Client.new(
   key: ENV['CLIENT_KEY'],
   passphrase: ENV['CLIENT_KEY_PASSPHRASE']
 )
+```
+
+### Basic Auth
+
+```ruby
+client = Net::Hippie::Client.new
+headers = { 'Authorization' => Net::Hippie.basic_auth('username', 'password') }
+client.get('https://www.example.org', headers: headers)
+```
+
+### Bearer Auth
+
+```ruby
+client = Net::Hippie::Client.new
+headers = { 'Authorization' => Net::Hippie.bearer_auth('token') }
+client.get('https://www.example.org', headers: headers)
 ```
 
 ## Development
