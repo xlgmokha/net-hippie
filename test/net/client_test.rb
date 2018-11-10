@@ -28,6 +28,7 @@ class ClientTest < Minitest::Test
       client.get(uri)
     end
     refute_nil response
+    assert_equal response.class, Net::HTTPOK
     assert_equal('true', JSON.parse(response.body)['success'])
   end
 
