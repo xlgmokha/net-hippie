@@ -1,5 +1,8 @@
 # Net::Hippie
 
+[![Gem Version](https://badge.fury.io/rb/net-hippie.svg)](https://rubygems.org/gems/net-hippie)
+[![Build Status](https://travis-ci.org/mokhan/net-hippie.svg?branch=master)](https://travis-ci.org/mokhan/net-hippie)
+
 Net::Hippie is a light weight wrapper around `net/http` that defaults to
 sending JSON messages.
 
