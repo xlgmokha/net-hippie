@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'base64'
 require 'json'
 require 'logger'
 require 'net/http'
@@ -19,6 +20,10 @@ module Net
 
     def self.logger=(logger)
       @logger = logger
+    end
+
+    def self.basic_auth(username, password)
+      "Basic #{::Base64.strict_encode64("#{username}:#{password}")}"
     end
   end
 end

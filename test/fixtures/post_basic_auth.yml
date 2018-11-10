@@ -1,0 +1,42 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://localhost:3000/oauth/tokens
+    body:
+      encoding: UTF-8
+      string: '{"grant_type":"authorization_code","code":"NGooUnxYq5f5DHvJqyzDhSft"}'
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - net/hippie 0.1.9
+      Authorization:
+      - Basic NzlhMWM3ODctNWNhYy00Y2M1LWIwMGUtMzc0ZjVhOTA5ZWY4OnphOU5lUmttOVlicUtEYTZHcmVVbW82Vg==
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - private, no-store
+      Pragma:
+      - no-cache
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"a33ca663fb0763eff33d5f23bc2d49fb"
+      X-Request-Id:
+      - bb0ef38a-9755-4afe-bc51-ddf401bb161a
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"access_token":"eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE1NDE4NzEyMDksImlhdCI6MTU0MTg2NzYwOSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwL21ldGFkYXRhIiwibmJmIjoxNTQxODY3NjA5LCJhdWQiOiI3OWExYzc4Ny01Y2FjLTRjYzUtYjAwZS0zNzRmNWE5MDllZjgiLCJqdGkiOiIzZmZmODNkYi1mMmM3LTRjMDUtYWY4Zi02NWM5ODU1ODUyZjciLCJzdWIiOiIwNDJhZjE5Ny1hOTQxLTRkNTctYjc4Ny00M2IxYmNjZDUwNzAiLCJ0b2tlbl90eXBlIjoiYWNjZXNzIn0.HcwFAgg54RqKEONvHRigAavISuUUmkOA3gz0pkV6UEABCUHGucJCNehnvjpiwe4ZpCF_J6Uen6rfLFQOz7oYe416Du3_lQ3IS3Vc6hTpsT0XZ0bY-BVV_D9-thYFIrT7mNnNoxEs8AhOTBaAjgBammO_097MCwMjTGzAnxm1cmYfBad4yZPJ8HxDqeL769Urc6vz3Ku_M9yUzzfgb6jkwfFlvxmqHOPYWxlDY9uTR2uNr-ZYL5e6J6ZE8rgLkNRqy-jla03z2nFxEuxlSjYbBe60Vcwc4IyKS4QzbKXFXB1v9bKBvJxIUjQPQ7dICQeT9xSXQwDhnBtGUVcGM4njSH0-0rbxE470bGVslmYsChosX0PvRqlo4TMuVr7R5iuwWawZrIB-Dx3kkvhFYhn0jWrEEJkd96nLD-dmg2Tzqa40AE2WqmKtM5jM0LNO9E21l-hPQXAleoKspFIjT6Yd2Om4bJi-0eJB6sNqDuP55rvd5WSjp-ktrrtRirt-9aldCB_0eWP9oFCMJ_Xboq5w0P1W5MXlBv5p6eEdgRjohQyT-dkOvYsZiT9-Y5ggbBMhgtHm1CXZnutN0RE_skZk9PvxV_nUfTji3CHIaUhoJmeI11Tw2tdtOEt58RqkFgK7CZYylG7JqQS6eKpTLB2MrrZtCHY3rrrDaL64l6jYYQI","token_type":"Bearer","expires_in":3600,"refresh_token":"eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE1NDE5NTQwMDksImlhdCI6MTU0MTg2NzYwOSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwL21ldGFkYXRhIiwibmJmIjoxNTQxODY3NjA5LCJhdWQiOiI3OWExYzc4Ny01Y2FjLTRjYzUtYjAwZS0zNzRmNWE5MDllZjgiLCJqdGkiOiIyZTBhODU3My0zYWFhLTQwM2YtYTk5OS1kZjU5MWI4MDM4YmIiLCJzdWIiOiIwNDJhZjE5Ny1hOTQxLTRkNTctYjc4Ny00M2IxYmNjZDUwNzAiLCJ0b2tlbl90eXBlIjoicmVmcmVzaCJ9.X4QBce8bxo7_CfSnSOUjfAjkLdXZXim1uqNXXTt3fHl3HuVEBWMfTzvxWGsYsj5xw5lUVWnR4kfmUVG54k6H_V6zQH57XLRhe6z133MKsDRv2pyMEWNyxmF0HHUDSIlD7Ckf0VL1B6YK_Wg27ZBe4Lljtkh6hTUiGig0d2PKBqqxKvhnBywBq7wE1KjWuJ9Mewl3gfUUwoKQCVTBKm_xZkCF-wuEXQasTZh21XCc7_dWkChOLv-gAXaGLJAADi_1DP4qnT6M_jDksBeUoRSab4P_NXF0ZsnIufrrjM6y5uiDhXS_GjISqvKH5YfdP_CmiH9qP3JJ-CEz5MRmrcgEMQe7U2oTjrsn3IUrpviS3mpFQbVVkWi9FOxQjHhedg_dSWKOi_PJnDetLmUgYBWIbIos4pVgXXxJHV9vx8IDzPNlcYouWrjY1kUmRowXn7w9ayAKwoOu5C34V2B-m_2p3jv3tTJY9IAdQzPNFSada975Ob3Z80dnDLEBsAQwqO41f7mtUz7yukFoBUZQJ1jEcRR1cCCiquEotDaQUhK0kR0jT976lxOjPCP3o3__I8WUku4qd0dLfABcl-CuMji1KQIC6NlFPtMyJBt0o0tgsF4kJqwNhGIGN7iuTB0MmAhf-RL3Tc7AXBWd9s0iKdy3AhLyFqY9J5Gz5KUtJzHmLUk"}'
+    http_version: 
+  recorded_at: Sat, 10 Nov 2018 16:33:30 GMT
+recorded_with: VCR 4.0.0

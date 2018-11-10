@@ -58,6 +58,22 @@ class ClientTest < Minitest::Test
     assert_equal response.class, Net::HTTPCreated
   end
 
+  def test_get_with_basic_auth_headers
+    VCR.use_cassette('post_basic_auth') do
+      uri = URI.parse('http://localhost:3000/oauth/tokens')
+      client_id = "79a1c787-5cac-4cc5-b00e-374f5a909ef8"
+      client_password = "za9NeRkm9YbqKDa6GreUmo6V"
+      authorization_code = "NGooUnxYq5f5DHvJqyzDhSft"
+      headers = { 'Authorization' => Net::Hippie.basic_auth(client_id, client_password) }
+      body = { grant_type: 'authorization_code', code: authorization_code }
+      response = subject.post(uri, headers: headers, body: body)
+      refute_nil response
+      json = JSON.parse(response.body, symbolize_names: true)
+      assert_equal('Bearer', json[:token_type])
+      assert(json[:token_type])
+    end
+  end
+
   def test_get_with_body
     uri = URI.parse('https://haveibeenpwned.com/api/breaches')
     body = { 'hello' => 'world' }
