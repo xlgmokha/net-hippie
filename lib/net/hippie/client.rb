@@ -77,7 +77,8 @@ module Net
         rescue *::Net::Hippie::CONNECTION_ERRORS => error
           raise error if n >= retries
 
-          delay = 2**n
+          jitter = rand(0.5)
+          delay = (2**n) + jitter
           logger.warn("Retry: #{n + 1}/#{retries}. Delay: #{delay} second(s)")
           logger.warn(error.message)
           sleep delay
