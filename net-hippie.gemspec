@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'net/http for hippies. ☮️ '
   spec.description   = 'net/http for hippies. ☮️ '
-  spec.homepage      = 'https://www.mokhan.ca/'
+  spec.homepage      = 'https://github.com/mokhan/net-hippie/'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
