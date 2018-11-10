@@ -77,10 +77,8 @@ module Net
         rescue *::Net::Hippie::CONNECTION_ERRORS => error
           raise error if n >= retries
 
-          jitter = rand(0.5)
-          delay = (2**n) + jitter
-          logger.warn("Retry: #{n + 1}/#{retries}. Delay: #{delay} second(s)")
-          logger.warn(error.message)
+          delay = (2**n) + rand(0.5) # delay + jitter
+          warn("`#{error.message}` Retry: #{n + 1}/#{retries} Delay: #{delay}s")
           sleep delay
         end
       end
@@ -121,6 +119,10 @@ module Net
 
         http.cert = OpenSSL::X509::Certificate.new(certificate)
         http.key = private_key
+      end
+
+      def warn(message)
+        logger.warn(message)
       end
     end
   end
