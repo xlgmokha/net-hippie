@@ -12,6 +12,7 @@ module Net
 
       attr_accessor :mapper
       attr_accessor :read_timeout
+      attr_accessor :logger
 
       def initialize(
         certificate: nil,
@@ -27,6 +28,7 @@ module Net
         @passphrase = passphrase
         @read_timeout = 30
         @verify_mode = verify_mode
+        @logger = Net::Hippie.logger
       end
 
       def execute(uri, request)
@@ -60,6 +62,16 @@ module Net
         execute(uri, request, &block)
       end
 
+      def with_retry(retries: 3)
+        retries.downto(0) do |n|
+          return yield self
+        rescue *::Net::Hippie::CONNECTION_ERRORS => error
+          logger.error("Retry Attempt: #{n}")
+          logger.error(error)
+          raise error if n.zero?
+        end
+      end
+
       private
 
       attr_reader :default_headers
@@ -71,7 +83,7 @@ module Net
         http.read_timeout = read_timeout
         http.use_ssl = uri.scheme == 'https'
         http.verify_mode = verify_mode
-        http.set_debug_output(Net::Hippie.logger)
+        http.set_debug_output(logger)
         apply_client_tls_to(http)
         http
       end

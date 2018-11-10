@@ -6,6 +6,7 @@ class ClientTest < Minitest::Test
   def initialize(*args)
     super
     @subject = Net::Hippie::Client.new
+    @subject.logger = Logger.new('/dev/null')
   end
 
   def test_get
@@ -15,6 +16,19 @@ class ClientTest < Minitest::Test
       refute_nil response
       assert_equal(283, JSON.parse(response.body).count)
     end
+  end
+
+  def test_get_with_retry
+    uri = URI.parse('https://www.example.org/api/scim/v2/schemas')
+    WebMock.stub_request(:get, uri.to_s)
+      .to_timeout.then
+      .to_timeout.then
+      .to_return(status: 200, body: { 'success' => 'true' }.to_json)
+    response = subject.with_retry(retries: 3) do |client|
+      client.get(uri)
+    end
+    refute_nil response
+    assert_equal('true', JSON.parse(response.body)['success'])
   end
 
   def test_get_with_string_uri
