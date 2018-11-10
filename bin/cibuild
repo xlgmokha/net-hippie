@@ -15,6 +15,7 @@ export RUBY_GC_HEAP_INIT_SLOTS=800000
 export RUBY_HEAP_FREE_MIN=100000
 export RUBY_HEAP_SLOTS_INCREMENT=400000
 export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1
+export CIBUILD=1
 
 ruby -v
 gem install bundler --no-ri --no-rdoc --conservative

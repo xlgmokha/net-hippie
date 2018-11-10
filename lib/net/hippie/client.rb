@@ -62,13 +62,25 @@ module Net
         execute(uri, request, &block)
       end
 
+      # attempt 1 -> delay 1 second
+      # attempt 2 -> delay 2 second
+      # attempt 3 -> delay 4 second
+      # attempt 4 -> delay 8 second
+      # attempt 5 -> delay 16 second
+      # attempt 6 -> delay 32 second
+      # attempt 7 -> delay 64 second
+      # attempt 8 -> delay 128 second
       def with_retry(retries: 3)
-        retries.downto(0) do |n|
+        retries = 3 if retries <= 0
+        0.upto(retries) do |n|
           return yield self
         rescue *::Net::Hippie::CONNECTION_ERRORS => error
-          logger.error("Retry Attempt: #{n}")
-          logger.error(error)
-          raise error if n.zero?
+          raise error if n >= retries
+
+          delay = 2**n
+          logger.warn("Retry: #{n + 1}/#{retries}. Delay: #{delay} second(s)")
+          logger.warn(error.message)
+          sleep delay
         end
       end
 

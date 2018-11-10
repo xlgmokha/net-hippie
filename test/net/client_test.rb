@@ -6,7 +6,7 @@ class ClientTest < Minitest::Test
   def initialize(*args)
     super
     @subject = Net::Hippie::Client.new
-    @subject.logger = Logger.new('/dev/null')
+    @subject.logger = ENV['CIBUILD'] ? Logger.new('/dev/null') : Logger.new(STDOUT)
   end
 
   def test_get
