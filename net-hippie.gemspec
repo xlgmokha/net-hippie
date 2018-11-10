@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['mo']
   spec.email         = ['mo@mokhan.ca']
 
-  spec.summary       = 'net/http for hippies.'
-  spec.description   = 'net/http for hippies.'
+  spec.summary       = 'net/http for hippies. ☮️ '
+  spec.description   = 'net/http for hippies. ☮️ '
   spec.homepage      = 'https://www.mokhan.ca/'
   spec.license       = 'MIT'
 
