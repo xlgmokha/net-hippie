@@ -25,5 +25,9 @@ module Net
     def self.basic_auth(username, password)
       "Basic #{::Base64.strict_encode64("#{username}:#{password}")}"
     end
+
+    def self.bearer_auth(token)
+      "Bearer #{token}"
+    end
   end
 end

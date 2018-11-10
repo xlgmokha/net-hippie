@@ -1,0 +1,40 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:3000/oauth/me
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      User-Agent:
+      - net/hippie 0.1.9
+      Authorization:
+      - Bearer eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjE1NDE4NzEyMDksImlhdCI6MTU0MTg2NzYwOSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwL21ldGFkYXRhIiwibmJmIjoxNTQxODY3NjA5LCJhdWQiOiI3OWExYzc4Ny01Y2FjLTRjYzUtYjAwZS0zNzRmNWE5MDllZjgiLCJqdGkiOiIzZmZmODNkYi1mMmM3LTRjMDUtYWY4Zi02NWM5ODU1ODUyZjciLCJzdWIiOiIwNDJhZjE5Ny1hOTQxLTRkNTctYjc4Ny00M2IxYmNjZDUwNzAiLCJ0b2tlbl90eXBlIjoiYWNjZXNzIn0.HcwFAgg54RqKEONvHRigAavISuUUmkOA3gz0pkV6UEABCUHGucJCNehnvjpiwe4ZpCF_J6Uen6rfLFQOz7oYe416Du3_lQ3IS3Vc6hTpsT0XZ0bY-BVV_D9-thYFIrT7mNnNoxEs8AhOTBaAjgBammO_097MCwMjTGzAnxm1cmYfBad4yZPJ8HxDqeL769Urc6vz3Ku_M9yUzzfgb6jkwfFlvxmqHOPYWxlDY9uTR2uNr-ZYL5e6J6ZE8rgLkNRqy-jla03z2nFxEuxlSjYbBe60Vcwc4IyKS4QzbKXFXB1v9bKBvJxIUjQPQ7dICQeT9xSXQwDhnBtGUVcGM4njSH0-0rbxE470bGVslmYsChosX0PvRqlo4TMuVr7R5iuwWawZrIB-Dx3kkvhFYhn0jWrEEJkd96nLD-dmg2Tzqa40AE2WqmKtM5jM0LNO9E21l-hPQXAleoKspFIjT6Yd2Om4bJi-0eJB6sNqDuP55rvd5WSjp-ktrrtRirt-9aldCB_0eWP9oFCMJ_Xboq5w0P1W5MXlBv5p6eEdgRjohQyT-dkOvYsZiT9-Y5ggbBMhgtHm1CXZnutN0RE_skZk9PvxV_nUfTji3CHIaUhoJmeI11Tw2tdtOEt58RqkFgK7CZYylG7JqQS6eKpTLB2MrrZtCHY3rrrDaL64l6jYYQI
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"42f31c7eb106e910f4988678571a9719"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - 769a3a35-493f-4c55-ab02-a567e4ea6838
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"exp":1541871209,"iat":1541867609,"iss":"http://localhost:5000/metadata","nbf":1541867609,"aud":"79a1c787-5cac-4cc5-b00e-374f5a909ef8","jti":"3fff83db-f2c7-4c05-af8f-65c9855852f7","sub":"042af197-a941-4d57-b787-43b1bccd5070","token_type":"access"}'
+    http_version: 
+  recorded_at: Sat, 10 Nov 2018 16:41:37 GMT
+recorded_with: VCR 4.0.0
