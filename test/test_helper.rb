@@ -5,6 +5,7 @@ require 'vcr'
 require 'webmock'
 
 require 'minitest/autorun'
+require 'minitest/pride'
 
 VCR.configure do |config|
   config.cassette_library_dir = 'test/fixtures'
