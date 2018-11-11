@@ -62,14 +62,14 @@ module Net
         execute(uri, request, &block)
       end
 
-      # attempt 1 -> delay 1 second
-      # attempt 2 -> delay 2 second
-      # attempt 3 -> delay 4 second
-      # attempt 4 -> delay 8 second
-      # attempt 5 -> delay 16 second
-      # attempt 6 -> delay 32 second
-      # attempt 7 -> delay 64 second
-      # attempt 8 -> delay 128 second
+      # attempt 1 -> delay 0.1 second
+      # attempt 2 -> delay 0.2 second
+      # attempt 3 -> delay 0.4 second
+      # attempt 4 -> delay 0.8 second
+      # attempt 5 -> delay 1.6 second
+      # attempt 6 -> delay 3.2 second
+      # attempt 7 -> delay 6.4 second
+      # attempt 8 -> delay 12.8 second
       def with_retry(retries: 3)
         retries = 0 if retries.nil? || retries.negative?
         0.upto(retries) do |n|
@@ -77,7 +77,7 @@ module Net
         rescue *::Net::Hippie::CONNECTION_ERRORS => error
           raise error if n == retries
 
-          delay = (2**n) + rand(0.5) # delay + jitter
+          delay = ((2**n) * 0.1) + Random.rand(0.05) # delay + jitter
           warn("`#{error.message}` Retry: #{n + 1}/#{retries} Delay: #{delay}s")
           sleep delay
         end
