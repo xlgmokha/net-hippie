@@ -14,6 +14,11 @@ require 'net/hippie/api'
 module Net
   # net/http for hippies.
   module Hippie
+    TIMEOUT_ERRORS = [
+      EOFError, Errno::ECONNRESET, Errno::EINVAL,
+      Net::ProtocolError, Timeout::Error
+    ].freeze
+
     def self.logger
       @logger ||= Logger.new(STDOUT)
     end

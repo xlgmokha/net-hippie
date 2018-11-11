@@ -72,15 +72,11 @@ module Net
       # attempt 8 -> delay 12.8 second
       def with_retry(retries: 3)
         retries = 0 if retries.nil? || retries.negative?
-        0.upto(retries) do |n|
-          return yield self
-        rescue EOFError, Errno::ECONNRESET, Errno::EINVAL,
-               Net::ProtocolError, Timeout::Error => error
-          raise error if n == retries
 
-          delay = ((2**n) * 0.1) + Random.rand(0.05) # delay + jitter
-          warn("`#{error.message}` Retry: #{n + 1}/#{retries} Delay: #{delay}s")
-          sleep delay
+        0.upto(retries) do |n|
+          attempt(n, retries) do
+            return yield self
+          end
         end
       end
 
@@ -89,6 +85,16 @@ module Net
       attr_reader :default_headers
       attr_reader :verify_mode
       attr_reader :certificate, :key, :passphrase
+
+      def attempt(attempt, max)
+        yield
+      rescue *TIMEOUT_ERRORS => error
+        raise error if attempt == max
+
+        delay = ((2**attempt) * 0.1) + Random.rand(0.05) # delay + jitter
+        warn("`#{error.message}` Retry: #{attempt + 1}/#{max} Delay: #{delay}s")
+        sleep delay
+      end
 
       def http_for(uri)
         http = Net::HTTP.new(uri.host, uri.port)
