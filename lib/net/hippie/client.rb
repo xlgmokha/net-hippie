@@ -71,11 +71,11 @@ module Net
       # attempt 7 -> delay 64 second
       # attempt 8 -> delay 128 second
       def with_retry(retries: 3)
-        retries = 3 if retries <= 0
+        retries = 0 if retries.nil? || retries.negative?
         0.upto(retries) do |n|
           return yield self
         rescue *::Net::Hippie::CONNECTION_ERRORS => error
-          raise error if n >= retries
+          raise error if n == retries
 
           delay = (2**n) + rand(0.5) # delay + jitter
           warn("`#{error.message}` Retry: #{n + 1}/#{retries} Delay: #{delay}s")

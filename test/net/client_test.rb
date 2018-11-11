@@ -23,13 +23,27 @@ class ClientTest < Minitest::Test
     WebMock.stub_request(:get, uri.to_s)
       .to_timeout.then
       .to_timeout.then
+      .to_timeout.then
       .to_return(status: 200, body: { 'success' => 'true' }.to_json)
     response = subject.with_retry(retries: 3) do |client|
       client.get(uri)
     end
     refute_nil response
-    assert_equal response.class, Net::HTTPOK
-    assert_equal('true', JSON.parse(response.body)['success'])
+    assert_equal Net::HTTPOK, response.class
+    assert_equal JSON.parse(response.body)['success'], 'true'
+  end
+
+  def test_exceeds_retries
+    uri = URI.parse('https://www.example.org/api/scim/v2/schemas')
+    WebMock.stub_request(:get, uri.to_s)
+      .to_timeout.then
+      .to_return(status: 200, body: { 'success' => 'true' }.to_json)
+
+    assert_raises Net::OpenTimeout do
+      subject.with_retry(retries: 0) do |client|
+        client.get(uri)
+      end
+    end
   end
 
   def test_get_with_string_uri
