@@ -155,7 +155,7 @@ class ClientTest < Minitest::Test
   def test_put
     VCR.use_cassette('put_breaches') do
       uri = URI.parse('https://haveibeenpwned.com/api/breaches')
-      body = { command: 'echo hello' }.to_json
+      body = { command: 'echo hello' }
       response = subject.put(uri, body: body)
       refute_nil response
       assert_equal 'Congratulations!', JSON.parse(response.body)['Message']
@@ -165,7 +165,7 @@ class ClientTest < Minitest::Test
   def test_put_with_block_syntax
     VCR.use_cassette('put_breaches') do
       uri = URI.parse('https://haveibeenpwned.com/api/breaches')
-      body = { command: 'echo hello' }.to_json
+      body = { command: 'echo hello' }
       subject.put(uri, body: body) do |_request, response|
         @response = response
       end
