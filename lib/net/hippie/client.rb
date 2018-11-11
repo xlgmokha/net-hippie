@@ -88,7 +88,7 @@ module Net
 
       def attempt(attempt, max)
         yield
-      rescue *TIMEOUT_ERRORS => error
+      rescue *CONNECTION_ERRORS => error
         raise error if attempt == max
 
         delay = ((2**attempt) * 0.1) + Random.rand(0.05) # delay + jitter
