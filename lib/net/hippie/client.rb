@@ -74,7 +74,8 @@ module Net
         retries = 0 if retries.nil? || retries.negative?
         0.upto(retries) do |n|
           return yield self
-        rescue *::Net::Hippie::CONNECTION_ERRORS => error
+        rescue EOFError, Errno::ECONNRESET, Errno::EINVAL,
+               Net::ProtocolError, Timeout::Error => error
           raise error if n == retries
 
           delay = ((2**n) * 0.1) + Random.rand(0.05) # delay + jitter
