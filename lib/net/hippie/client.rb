@@ -12,6 +12,7 @@ module Net
 
       attr_accessor :mapper
       attr_accessor :read_timeout
+      attr_accessor :open_timeout
       attr_accessor :logger
 
       def initialize(
@@ -99,6 +100,7 @@ module Net
       def http_for(uri)
         http = Net::HTTP.new(uri.host, uri.port)
         http.read_timeout = read_timeout
+        http.open_timeout = open_timeout if open_timeout
         http.use_ssl = uri.scheme == 'https'
         http.verify_mode = verify_mode
         http.set_debug_output(logger)
