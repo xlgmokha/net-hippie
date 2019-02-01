@@ -10,10 +10,7 @@ module Net
         'User-Agent' => "net/hippie #{Net::Hippie::VERSION}"
       }.freeze
 
-      attr_accessor :mapper
-      attr_accessor :read_timeout
-      attr_accessor :open_timeout
-      attr_accessor :logger
+      attr_accessor :mapper, :read_timeout, :open_timeout, :logger
 
       def initialize(
         certificate: nil,
