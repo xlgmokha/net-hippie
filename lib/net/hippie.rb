@@ -30,6 +30,14 @@ module Net
       @logger = logger
     end
 
+    def self.verify_mode
+      @verify_mode ||= OpenSSL::SSL::VERIFY_PEER
+    end
+
+    def self.verify_mode=(mode)
+      @verify_mode = mode
+    end
+
     def self.basic_auth(username, password)
       "Basic #{::Base64.strict_encode64("#{username}:#{password}")}"
     end

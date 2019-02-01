@@ -17,7 +17,7 @@ module Net
         headers: DEFAULT_HEADERS,
         key: nil,
         passphrase: nil,
-        verify_mode: nil
+        verify_mode: Net::Hippie.verify_mode
       )
         @certificate = certificate
         @default_headers = headers
