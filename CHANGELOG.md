@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.5] - 2019-02-06
 ### Changed
-- default to '/' when a path is not found
+- revert change introduced in 0.2.4. See [5.12][https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html]
 
 ## [0.2.4] - 2019-02-06
 ### Changed
