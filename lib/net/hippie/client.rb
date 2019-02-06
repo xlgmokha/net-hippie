@@ -107,8 +107,9 @@ module Net
 
       def request_for(type, uri, headers: {}, body: {})
         uri = URI.parse(uri.to_s)
+        path = uri.path == '' ? '/' : uri.path
         final_headers = default_headers.merge(headers)
-        type.new(uri.path, final_headers).tap do |x|
+        type.new(path || '/', final_headers).tap do |x|
           x.body = mapper.map_from(final_headers, body) unless body.empty?
         end
       end

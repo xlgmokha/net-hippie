@@ -18,6 +18,16 @@ class ClientTest < Minitest::Test
     end
   end
 
+  def test_get_root_path
+    VCR.use_cassette('get_root') do
+      uri = URI.parse('https://www.mokhan.ca')
+      response = subject.get(uri, headers: {})
+      refute_nil response
+      assert_equal response.code, "200"
+      assert response.body.include?("<!DOCTYPE html>")
+    end
+  end
+
   def test_get_with_retry
     uri = URI.parse('https://www.example.org/api/scim/v2/schemas')
     WebMock.stub_request(:get, uri.to_s)
