@@ -18,6 +18,6 @@ export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1
 export CIBUILD=1
 
 ruby -v
-gem install bundler --conservative -v '~> 2.0'
+gem install bundler:2.0.1 --conservative
 bin/test
 bin/lint
