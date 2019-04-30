@@ -6,3 +6,9 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
   TargetRubyVersion: 2.5
+
+Layout/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: error

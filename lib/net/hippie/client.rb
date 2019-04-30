@@ -12,13 +12,8 @@ module Net
 
       attr_accessor :mapper, :read_timeout, :open_timeout, :logger
 
-      def initialize(
-        certificate: nil,
-        headers: DEFAULT_HEADERS,
-        key: nil,
-        passphrase: nil,
-        verify_mode: Net::Hippie.verify_mode
-      )
+      def initialize(certificate: nil, headers: DEFAULT_HEADERS,
+        key: nil, passphrase: nil, verify_mode: Net::Hippie.verify_mode)
         @certificate = certificate
         @default_headers = headers
         @key = key
@@ -42,7 +37,7 @@ module Net
         request = request_for(Net::HTTP::Get, uri, headers: headers, body: body)
         execute(uri, request, &block)
       end
-      
+
       def patch(uri, headers: {}, body: {}, &block)
         type = Net::HTTP::Patch
         request = request_for(type, uri, headers: headers, body: body)
