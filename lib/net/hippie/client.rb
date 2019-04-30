@@ -42,6 +42,12 @@ module Net
         request = request_for(Net::HTTP::Get, uri, headers: headers, body: body)
         execute(uri, request, &block)
       end
+      
+      def post(uri, headers: {}, body: {}, &block)
+        type = Net::HTTP::Patch
+        request = request_for(type, uri, headers: headers, body: body)
+        execute(uri, request, &block)
+      end
 
       def post(uri, headers: {}, body: {}, &block)
         type = Net::HTTP::Post
