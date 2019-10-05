@@ -16,10 +16,18 @@ module Net
   module Hippie
     CONNECTION_ERRORS = [
       EOFError,
+      Errno::ECONNREFUSED,
       Errno::ECONNRESET,
+      Errno::ECONNRESET,
+      Errno::EHOSTUNREACH,
       Errno::EINVAL,
+      Net::OpenTimeout,
       Net::ProtocolError,
-      Timeout::Error
+      Net::ReadTimeout,
+      OpenSSL::OpenSSLError,
+      OpenSSL::SSL::SSLError,
+      SocketError,
+      Timeout::Error,
     ].freeze
 
     def self.logger
