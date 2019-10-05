@@ -27,7 +27,7 @@ module Net
       OpenSSL::OpenSSLError,
       OpenSSL::SSL::SSLError,
       SocketError,
-      Timeout::Error,
+      Timeout::Error
     ].freeze
 
     def self.logger
