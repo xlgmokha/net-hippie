@@ -2,6 +2,6 @@
 
 module Net
   module Hippie
-    VERSION = '0.3.7'
+    VERSION = '0.3.0'
   end
 end

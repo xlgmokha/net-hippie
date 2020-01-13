@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- nil
+
+## [0.3.0] - 2020-01-13
 ### Added
 - Allow following HTTP redirects.
 
@@ -42,7 +45,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - with\_retry.https://www.mokhan.ca/%F0%9F%92%8E/2018/11/10/net-hippie-0-2-0.html
 - authorization header helpers
 
-[Unreleased]: https://github.com/mokhan/net-hippie/compare/v0.2.7...HEAD
+[Unreleased]: https://github.com/mokhan/net-hippie/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/mokhan/net-hippie/compare/v0.2.7...v0.3.0
 [0.2.7]: https://github.com/mokhan/net-hippie/compare/v0.2.6...v0.2.7
 [0.2.6]: https://github.com/mokhan/net-hippie/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/mokhan/net-hippie/compare/v0.2.4...v0.2.5
