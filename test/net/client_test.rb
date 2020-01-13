@@ -18,6 +18,23 @@ class ClientTest < Minitest::Test
     end
   end
 
+  def test_get_with_redirects
+    url = 'https://www.example.org/'
+    n = 10
+    WebMock
+      .stub_request(:get, url)
+      .to_return(status: 301, headers: { 'Location' => url })
+      .times(n)
+      .then
+      .to_return(status: 200, body: { success: true }.to_json)
+
+    subject.follow_redirects = n
+    response = subject.get(url)
+    refute_nil response
+    assert_equal Net::HTTPOK, response.class
+    assert JSON.parse(response.body)['success']
+  end
+
   def test_get_root_path
     VCR.use_cassette('get_root') do
       uri = URI.parse('https://www.mokhan.ca')
@@ -87,8 +104,8 @@ class ClientTest < Minitest::Test
   def test_get_with_headers
     headers = { 'Accept' => 'application/vnd.haveibeenpwned.v2+json' }
     WebMock.stub_request(:get, 'https://haveibeenpwned.com/api/breaches')
-           .with(headers: headers)
-           .to_return(status: 201, body: {}.to_json)
+      .with(headers: headers)
+      .to_return(status: 201, body: {}.to_json)
 
     uri = URI.parse('https://haveibeenpwned.com/api/breaches')
 
@@ -133,8 +150,8 @@ class ClientTest < Minitest::Test
     uri = URI.parse('https://haveibeenpwned.com/api/breaches')
     body = { 'hello' => 'world' }
     WebMock.stub_request(:get, uri.to_s)
-           .with(body: body.to_json)
-           .to_return(status: 201, body: {}.to_json)
+      .with(body: body.to_json)
+      .to_return(status: 201, body: {}.to_json)
 
     response = subject.get(uri, body: body)
 

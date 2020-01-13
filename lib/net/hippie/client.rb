@@ -11,6 +11,7 @@ module Net
       }.freeze
 
       attr_accessor :mapper, :read_timeout, :open_timeout, :logger
+      attr_accessor :follow_redirects
 
       def initialize(certificate: nil, headers: DEFAULT_HEADERS,
         key: nil, passphrase: nil, verify_mode: Net::Hippie.verify_mode)
@@ -22,43 +23,34 @@ module Net
         @read_timeout = 30
         @verify_mode = verify_mode
         @logger = Net::Hippie.logger
+        @follow_redirects = 0
       end
 
       def execute(uri, request)
-        response = http_for(normalize_uri(uri)).request(request)
-        if block_given?
-          yield request, response
-        else
-          response
+        response = follow(limit: follow_redirects) do
+          http_for(normalize_uri(uri)).request(request)
         end
+        block_given? ? yield(request, response) : response
       end
 
       def get(uri, headers: {}, body: {}, &block)
-        request = request_for(Net::HTTP::Get, uri, headers: headers, body: body)
-        execute(uri, request, &block)
+        run(uri, Net::HTTP::Get, headers, body, &block)
       end
 
       def patch(uri, headers: {}, body: {}, &block)
-        type = Net::HTTP::Patch
-        request = request_for(type, uri, headers: headers, body: body)
-        execute(uri, request, &block)
+        run(uri, Net::HTTP::Patch, headers, body, &block)
       end
 
       def post(uri, headers: {}, body: {}, &block)
-        type = Net::HTTP::Post
-        request = request_for(type, uri, headers: headers, body: body)
-        execute(uri, request, &block)
+        run(uri, Net::HTTP::Post, headers, body, &block)
       end
 
       def put(uri, headers: {}, body: {}, &block)
-        request = request_for(Net::HTTP::Put, uri, headers: headers, body: body)
-        execute(uri, request, &block)
+        run(uri, Net::HTTP::Put, headers, body, &block)
       end
 
       def delete(uri, headers: {}, body: {}, &block)
-        type = Net::HTTP::Delete
-        request = request_for(type, uri, headers: headers, body: body)
-        execute(uri, request, &block)
+        run(uri, Net::HTTP::Delete, headers, body, &block)
       end
 
       # attempt 1 -> delay 0.1 second
@@ -81,8 +73,7 @@ module Net
 
       private
 
-      attr_reader :default_headers
-      attr_reader :verify_mode
+      attr_reader :default_headers, :verify_mode
       attr_reader :certificate, :key, :passphrase
 
       def attempt(attempt, max)
@@ -130,6 +121,17 @@ module Net
 
       def warn(message)
         logger.warn(message)
+      end
+
+      def follow(limit: 0, &block)
+        response = yield
+        redirected = limit.positive? && response.is_a?(Net::HTTPRedirection)
+        redirected ? follow(limit: limit - 1, &block) : response
+      end
+
+      def run(uri, http_method, headers, body, &block)
+        request = request_for(http_method, uri, headers: headers, body: body)
+        execute(uri, request, &block)
       end
     end
   end
