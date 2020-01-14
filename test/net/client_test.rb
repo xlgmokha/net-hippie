@@ -18,6 +18,24 @@ class ClientTest < Minitest::Test
     end
   end
 
+  def test_multiple_gets_to_pypi
+    VCR.use_cassette('multiple-gets-to-pypi') do
+      %w{
+        https://pypi.org/pypi/django/1.11.3/json
+        https://pypi.org/pypi/Django/1.11.3/json
+        https://pypi.org/pypi/docutils/0.13.1/json
+        https://pypi.org/pypi/pytz/2019.2/json
+        https://pypi.org/pypi/requests/2.5.3/json
+      }.each do |url|
+        subject.follow_redirects = 3
+        response = subject.get(url)
+        refute_nil response
+        assert_equal Net::HTTPOK, response.class
+        assert JSON.parse(response.body)
+      end
+    end
+  end
+
   def test_get_with_redirects
     url = 'https://www.example.org/'
     n = 10
