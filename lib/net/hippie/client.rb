@@ -26,11 +26,15 @@ module Net
         @follow_redirects = 0
       end
 
-      def execute(uri, request)
-        response = follow(limit: follow_redirects) do
-          http_for(normalize_uri(uri)).request(request)
+      def execute(uri, request, limit: follow_redirects, &block)
+        response = http_for(uri).request(request)
+        if limit.positive? && response.is_a?(Net::HTTPRedirection)
+          location = response['location']
+          request = request_for(Net::HTTP::Get, location)
+          execute(location, request, limit: limit - 1, &block)
+        else
+          block_given? ? yield(request, response) : response
         end
-        block_given? ? yield(request, response) : response
       end
 
       def get(uri, headers: {}, body: {}, &block)
@@ -87,6 +91,7 @@ module Net
       end
 
       def http_for(uri)
+        uri = URI.parse(uri.to_s)
         http = Net::HTTP.new(uri.host, uri.port)
         http.read_timeout = read_timeout
         http.open_timeout = open_timeout if open_timeout
@@ -99,13 +104,10 @@ module Net
 
       def request_for(type, uri, headers: {}, body: {})
         final_headers = default_headers.merge(headers)
-        type.new(uri.to_s, final_headers).tap do |x|
+        uri = URI.parse(uri.to_s)
+        type.new(uri, final_headers).tap do |x|
           x.body = mapper.map_from(final_headers, body) unless body.empty?
         end
-      end
-
-      def normalize_uri(uri)
-        uri.is_a?(URI) ? uri : URI.parse(uri)
       end
 
       def private_key(type = OpenSSL::PKey::RSA)
@@ -121,12 +123,6 @@ module Net
 
       def warn(message)
         logger.warn(message)
-      end
-
-      def follow(limit: 0, &block)
-        response = yield
-        redirected = limit.positive? && response.is_a?(Net::HTTPRedirection)
-        redirected ? follow(limit: limit - 1, &block) : response
       end
 
       def run(uri, http_method, headers, body, &block)
