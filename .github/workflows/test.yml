@@ -10,6 +10,6 @@ jobs:
     - name: Set up Ruby
       uses: actions/setup-ruby@v1
       with:
-        version: 2.6.x
+        version: 2.7.x
     - name: Build and test
       run: bin/cibuild
