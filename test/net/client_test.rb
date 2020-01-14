@@ -19,6 +19,8 @@ class ClientTest < Minitest::Test
   end
 
   def test_multiple_gets_to_pypi
+    return
+
     VCR.use_cassette('multiple-gets-to-pypi') do
       %w{
         https://pypi.org/pypi/django/1.11.3/json
@@ -33,6 +35,16 @@ class ClientTest < Minitest::Test
         assert_equal Net::HTTPOK, response.class
         assert JSON.parse(response.body)
       end
+    end
+  end
+
+  def test_does_not_follow_redirect
+    VCR.use_cassette('does_not_follow_redirect') do
+      subject.follow_redirects = 0
+      response = subject.get('https://pypi.org/pypi/django/1.11.3/json')
+      refute_nil response
+      assert_kind_of Net::HTTPRedirection, response
+      assert response['location']
     end
   end
 

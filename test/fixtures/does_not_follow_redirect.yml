@@ -1,0 +1,24 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://pypi.org/pypi/django/1.11.3/json
+  response:
+    status:
+      code: 301
+      message: Moved Permanently
+    headers:
+      Content-Type:
+      - application/json
+      Location:
+      - https://pypi.org/pypi/Django/1.11.3/json
+      Content-Length:
+      - '178'
+    body:
+      encoding: UTF-8
+      string: '{"message": "The resource has been moved to /pypi/Django/1.11.3/json;
+        you should be redirected automatically.\n\n", "code": "301 Moved Permanently",
+        "title": "Moved Permanently"}'
+    http_version:
+  recorded_at: Tue, 14 Jan 2020 22:00:25 GMT
+recorded_with: VCR 4.0.0
