@@ -56,6 +56,16 @@ class ClientTest < Minitest::Test
     end
   end
 
+  def test_follow_redirects_with_relative_paths
+    VCR.use_cassette('follow_redirects_with_relative_paths') do
+      subject.follow_redirects = 10
+      response = subject.get("http://go.microsoft.com/fwlink/?LinkId=329770")
+      refute_nil response
+      assert_kind_of Net::HTTPOK, response
+      assert response.body
+    end
+  end
+
   def test_get_with_redirects
     url = 'https://www.example.org/'
     n = 10

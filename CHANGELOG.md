@@ -1,4 +1,4 @@
-Version 0.3.1
+Version 0.3.2
 
 # Changelog
 All notable changes to this project will be documented in this file.
@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 - nil
+
+## [0.3.2] - 2020-01-28
+### Fixed
+- Follow relative path redirects
 
 ## [0.3.1] - 2020-01-14
 ### Fixed
@@ -50,7 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - with\_retry.https://www.mokhan.ca/%F0%9F%92%8E/2018/11/10/net-hippie-0-2-0.html
 - authorization header helpers
 
-[Unreleased]: https://github.com/mokhan/net-hippie/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/mokhan/net-hippie/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/mokhan/net-hippie/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/mokhan/net-hippie/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/mokhan/net-hippie/compare/v0.2.7...v0.3.0
 [0.2.7]: https://github.com/mokhan/net-hippie/compare/v0.2.6...v0.2.7

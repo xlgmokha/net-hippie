@@ -27,11 +27,12 @@ module Net
       end
 
       def execute(uri, request, limit: follow_redirects, &block)
-        response = http_for(uri).request(request)
+        http = http_for(uri)
+        response = http.request(request)
         if limit.positive? && response.is_a?(Net::HTTPRedirection)
-          location = response['location']
-          request = request_for(Net::HTTP::Get, location)
-          execute(location, request, limit: limit - 1, &block)
+          url = build_url_for(http, response['location'])
+          request = request_for(Net::HTTP::Get, url)
+          execute(url, request, limit: limit - 1, &block)
         else
           block_given? ? yield(request, response) : response
         end
@@ -86,7 +87,7 @@ module Net
         raise error if attempt == max
 
         delay = ((2**attempt) * 0.1) + Random.rand(0.05) # delay + jitter
-        warn("`#{error.message}` Retry: #{attempt + 1}/#{max} Delay: #{delay}s")
+        logger.warn("`#{error.message}` #{attempt + 1}/#{max} Delay: #{delay}s")
         sleep delay
       end
 
@@ -121,13 +122,15 @@ module Net
         http.key = private_key
       end
 
-      def warn(message)
-        logger.warn(message)
-      end
-
       def run(uri, http_method, headers, body, &block)
         request = request_for(http_method, uri, headers: headers, body: body)
         execute(uri, request, &block)
+      end
+
+      def build_url_for(http, path)
+        return path if path.start_with?('http')
+
+        "#{http.use_ssl? ? 'https' : 'http'}://#{http.address}#{path}"
       end
     end
   end
