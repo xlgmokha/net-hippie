@@ -2,7 +2,4 @@
 
 set -e
 
-[ -z "$DEBUG" ] || set -x
-
-echo [$(date "+%H:%M:%S")] "==> Running linters…"
 bundle exec rake lint
