@@ -3,8 +3,8 @@
 [![Gem Version](https://badge.fury.io/rb/net-hippie.svg)](https://rubygems.org/gems/net-hippie)
 [![Build Status](https://travis-ci.org/mokhan/net-hippie.svg?branch=master)](https://travis-ci.org/mokhan/net-hippie)
 
-Net::Hippie is a light weight wrapper around `net/http` that defaults to
-sending JSON messages.
+`Net::Hippie` is a light weight wrapper around `net/http` that defaults to
+sending `JSON` messages.
 
 ## Installation
 
@@ -27,23 +27,22 @@ Or install it yourself as:
 ```ruby
 require 'net/hippie'
 
-Net::Hippie.logger = Rails.logger
-
-client = Net::Hippie::Client.new
+Net::Hippie.logger = Logger.new(STDERR)
 
 headers = {
   'Accept' => 'application/vnd.haveibeenpwned.v2+json'
 }
 
-uri = URI.parse('https://haveibeenpwned.com/api/breaches')
-response = client.get(uri, headers: headers)
+uri = 'https://haveibeenpwned.com/api/breaches'
+response = Net::Hippie.get(uri, headers: headers)
 puts JSON.parse(response.body)
 ```
 
 ```ruby
-client = Net::Hippie::Client.new
-body = { user: { name: 'hippie' } }
-response = client.post(URI.parse('https://example.org'), body: body)
+response = Net::Hippie.post(
+  'https://example.org',
+  body: { name: 'hippie' }
+)
 puts JSON.parse(response.body)
 ```
 
@@ -69,24 +68,30 @@ client = Net::Hippie::Client.new(
 ### Basic Auth
 
 ```ruby
-client = Net::Hippie::Client.new
-headers = { 'Authorization' => Net::Hippie.basic_auth('username', 'password') }
-client.get('https://www.example.org', headers: headers)
+Net::Hippie.get(
+  'https://www.example.org',
+  headers: {
+    'Authorization' => Net::Hippie.basic_auth('username', 'password')
+  }
+)
 ```
 
 ### Bearer Auth
 
 ```ruby
-client = Net::Hippie::Client.new
 headers = { 'Authorization' => Net::Hippie.bearer_auth('token') }
-client.get('https://www.example.org', headers: headers)
+Net::Hippie.get('https://www.example.org', headers: headers)
 ```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/test` to run the tests.
+You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
+To release a new version, update the version number in `version.rb`,
+and then run `bin/shipit`, which will create a git tag for the version,
+push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 

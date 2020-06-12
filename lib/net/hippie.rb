@@ -52,5 +52,15 @@ module Net
     def self.bearer_auth(token)
       "Bearer #{token}"
     end
+
+    def self.method_missing(symbol, *args)
+      default_client.with_retry(retries: 3) do |client|
+        client.public_send(symbol, *args)
+      end
+    end
+
+    def self.default_client
+      @subject ||= Client.new
+    end
   end
 end

@@ -21,4 +21,17 @@ class HippieTest < Minitest::Test
     Net::Hippie.verify_mode = OpenSSL::SSL::VERIFY_NONE
     assert Net::Hippie.verify_mode == OpenSSL::SSL::VERIFY_NONE
   end
+
+  def test_get_with_retry
+    uri = URI.parse('https://www.example.org/api/scim/v2/schemas')
+    WebMock.stub_request(:get, uri.to_s)
+      .to_timeout.then
+      .to_timeout.then
+      .to_timeout.then
+      .to_return(status: 200, body: { 'success' => 'true' }.to_json)
+    response = Net::Hippie.get(uri)
+    refute_nil response
+    assert_equal Net::HTTPOK, response.class
+    assert_equal JSON.parse(response.body)['success'], 'true'
+  end
 end

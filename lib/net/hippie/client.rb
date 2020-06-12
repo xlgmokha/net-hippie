@@ -12,18 +12,20 @@ module Net
 
       attr_accessor :mapper, :read_timeout, :open_timeout, :logger
       attr_accessor :follow_redirects
+      attr_accessor :certificate, :key, :passphrase
 
-      def initialize(certificate: nil, headers: DEFAULT_HEADERS,
-        key: nil, passphrase: nil, verify_mode: Net::Hippie.verify_mode)
-        @certificate = certificate
-        @default_headers = headers
-        @key = key
-        @mapper = ContentTypeMapper.new
-        @passphrase = passphrase
-        @read_timeout = 30
-        @verify_mode = verify_mode
-        @logger = Net::Hippie.logger
-        @follow_redirects = 0
+      def initialize(options = {})
+        @default_headers = options.fetch(:headers, DEFAULT_HEADERS)
+        @mapper = options.fetch(:mapper, ContentTypeMapper.new)
+        @read_timeout = options.fetch(:read_timeout, 10)
+        @open_timeout = options.fetch(:open_timeout, 10)
+        @verify_mode = options.fetch(:verify_mode, Net::Hippie.verify_mode)
+        @logger = options.fetch(:logger, Net::Hippie.logger)
+        @follow_redirects = options.fetch(:follow_redirects, 0)
+        @certificate = options[:certificate]
+        @key = options[:key]
+        @passphrase = options[:passphrase]
+        @connections = {}
       end
 
       def execute(uri, request, limit: follow_redirects, &block)
@@ -79,7 +81,6 @@ module Net
       private
 
       attr_reader :default_headers, :verify_mode
-      attr_reader :certificate, :key, :passphrase
 
       def attempt(attempt, max)
         yield
@@ -92,15 +93,18 @@ module Net
       end
 
       def http_for(uri)
-        uri = URI.parse(uri.to_s)
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.read_timeout = read_timeout
-        http.open_timeout = open_timeout if open_timeout
-        http.use_ssl = uri.scheme == 'https'
-        http.verify_mode = verify_mode
-        http.set_debug_output(logger)
-        apply_client_tls_to(http)
-        http
+        @connections.fetch(uri.to_s) do |key|
+          uri = URI.parse(uri.to_s)
+          http = Net::HTTP.new(uri.host, uri.port)
+          http.read_timeout = read_timeout
+          http.open_timeout = open_timeout
+          http.use_ssl = uri.scheme == 'https'
+          http.verify_mode = verify_mode
+          http.set_debug_output(logger)
+          apply_client_tls_to(http)
+          @connections[key] = http
+          http
+        end
       end
 
       def request_for(type, uri, headers: {}, body: {})

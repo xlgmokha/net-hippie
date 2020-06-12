@@ -306,8 +306,8 @@ class ClientTest < Minitest::Test
   end
 
   def test_open_timeout_setting
-    assert_nil subject.open_timeout
-    @subject.open_timeout = 10
     assert_equal subject.open_timeout, 10
+    @subject.open_timeout = 5
+    assert_equal subject.open_timeout, 5
   end
 end
