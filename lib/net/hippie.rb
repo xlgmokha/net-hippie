@@ -9,7 +9,6 @@ require 'openssl'
 require 'net/hippie/version'
 require 'net/hippie/content_type_mapper'
 require 'net/hippie/client'
-require 'net/hippie/api'
 
 module Net
   # net/http for hippies.
