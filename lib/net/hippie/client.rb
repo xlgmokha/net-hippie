@@ -18,17 +18,18 @@ module Net
         @mapper = options.fetch(:mapper, ContentTypeMapper.new)
         @logger = options.fetch(:logger, Net::Hippie.logger)
         @follow_redirects = options.fetch(:follow_redirects, 0)
-        @http_connections = Hash.new do |hash, key|
+        @default_headers = options.fetch(:headers, DEFAULT_HEADERS)
+        @connections = Hash.new do |hash, key|
           scheme, host, port = key
-          build_http_for(scheme, host, port).tap { |http| hash[key] = http }
+          hash[key] = Connection.new(scheme, host, port, options)
         end
       end
 
       def execute(uri, request, limit: follow_redirects, &block)
-        http = http_for(uri)
-        response = http.request(request)
+        connection = connection_for(uri)
+        response = connection.run(request)
         if limit.positive? && response.is_a?(Net::HTTPRedirection)
-          url = build_url_for(http, response['location'])
+          url = connection.build_url_for(response['location'])
           request = request_for(Net::HTTP::Get, url)
           execute(url, request, limit: limit - 1, &block)
         else
@@ -76,9 +77,7 @@ module Net
 
       private
 
-      def default_headers
-        @options.fetch(:headers, DEFAULT_HEADERS)
-      end
+      attr_reader :default_headers
 
       def attempt(attempt, max)
         yield
@@ -90,17 +89,6 @@ module Net
         sleep delay
       end
 
-      def build_http_for(scheme, host, port)
-        http = Net::HTTP.new(host, port)
-        http.read_timeout = @options.fetch(:read_timeout, 10)
-        http.open_timeout = @options.fetch(:open_timeout, 10)
-        http.use_ssl = scheme == 'https'
-        http.verify_mode = @options.fetch(:verify_mode, Net::Hippie.verify_mode)
-        http.set_debug_output(logger)
-        apply_client_tls_to(http)
-        http
-      end
-
       def request_for(type, uri, headers: {}, body: {})
         final_headers = default_headers.merge(headers)
         type.new(URI.parse(uri.to_s), final_headers).tap do |x|
@@ -108,31 +96,14 @@ module Net
         end
       end
 
-      def private_key(key, passphrase, type = OpenSSL::PKey::RSA)
-        passphrase ? type.new(key, passphrase) : type.new(key)
-      end
-
-      def apply_client_tls_to(http)
-        return if @options[:certificate].nil? || @options[:key].nil?
-
-        http.cert = OpenSSL::X509::Certificate.new(@options[:certificate])
-        http.key = private_key(@options[:key], @options[:passphrase])
-      end
-
       def run(uri, http_method, headers, body, &block)
         request = request_for(http_method, uri, headers: headers, body: body)
         execute(uri, request, &block)
       end
 
-      def build_url_for(http, path)
-        return path if path.start_with?('http')
-
-        "#{http.use_ssl? ? 'https' : 'http'}://#{http.address}#{path}"
-      end
-
-      def http_for(uri)
+      def connection_for(uri)
         uri = URI.parse(uri.to_s)
-        @http_connections[[uri.scheme, uri.host, uri.port]]
+        @connections[[uri.scheme, uri.host, uri.port]]
       end
     end
   end
