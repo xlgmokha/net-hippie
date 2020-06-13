@@ -19,15 +19,13 @@ module Net
         @logger = options.fetch(:logger, Net::Hippie.logger)
         @follow_redirects = options.fetch(:follow_redirects, 0)
         @http_connections = Hash.new do |hash, key|
-          uri = URI.parse(key.to_s)
-          build_http_for(uri).tap do |http|
-            hash[key] = http
-          end
+          scheme, host, port = key
+          build_http_for(scheme, host, port).tap { |http| hash[key] = http }
         end
       end
 
       def execute(uri, request, limit: follow_redirects, &block)
-        http = @http_connections[uri]
+        http = http_for(uri)
         response = http.request(request)
         if limit.positive? && response.is_a?(Net::HTTPRedirection)
           url = build_url_for(http, response['location'])
@@ -92,11 +90,11 @@ module Net
         sleep delay
       end
 
-      def build_http_for(uri)
-        http = Net::HTTP.new(uri.host, uri.port)
+      def build_http_for(scheme, host, port)
+        http = Net::HTTP.new(host, port)
         http.read_timeout = @options.fetch(:read_timeout, 10)
         http.open_timeout = @options.fetch(:open_timeout, 10)
-        http.use_ssl = uri.scheme == 'https'
+        http.use_ssl = scheme == 'https'
         http.verify_mode = @options.fetch(:verify_mode, Net::Hippie.verify_mode)
         http.set_debug_output(logger)
         apply_client_tls_to(http)
@@ -130,6 +128,11 @@ module Net
         return path if path.start_with?('http')
 
         "#{http.use_ssl? ? 'https' : 'http'}://#{http.address}#{path}"
+      end
+
+      def http_for(uri)
+        uri = URI.parse(uri.to_s)
+        @http_connections[[uri.scheme, uri.host, uri.port]]
       end
     end
   end

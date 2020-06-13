@@ -7,7 +7,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- nil
+### Added
+- Add simpler API to remove need to instantiate `Client` directly.
+- Default to 3 retries using simple API.
+- Re-use client connection for connections to the same schem, host, and port.
+
+### Removed
+- Remove support for Ruby 2.4
+- Remove legacy `Api` class.
+
+### Changed
+- Limit mutable options on Client.
+- Change default `read_timeout` to 10 seconds.
+- Change default `open_timeout` to 10 seconds.
 
 ## [0.3.2] - 2020-01-28
 ### Fixed

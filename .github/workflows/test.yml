@@ -5,11 +5,13 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [ '2.5', '2.6', '2.7' ]
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Ruby
-      uses: actions/setup-ruby@v1
+    - uses: actions/setup-ruby@v1
       with:
-        version: 2.7.x
-    - name: Build and test
+        ruby-version: ${{ matrix.ruby }}
+    - name: cibuild
       run: bin/cibuild
