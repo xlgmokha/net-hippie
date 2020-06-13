@@ -6,7 +6,6 @@ class ClientTest < Minitest::Test
   def initialize(*args)
     super
     @subject = Net::Hippie::Client.new
-    @subject.logger = ENV['CIBUILD'] ? Logger.new('/dev/null') : Logger.new(STDOUT)
   end
 
   def test_get
@@ -27,7 +26,7 @@ class ClientTest < Minitest::Test
         https://pypi.org/pypi/pytz/2019.2/json
         https://pypi.org/pypi/requests/2.5.3/json
       }.each do |url|
-        subject.follow_redirects = 3
+        subject = Net::Hippie::Client.new(follow_redirects: 3)
         response = subject.get(url)
         refute_nil response
         assert_equal Net::HTTPOK, response.class
@@ -38,7 +37,7 @@ class ClientTest < Minitest::Test
 
   def test_does_not_follow_redirect
     VCR.use_cassette('does_not_follow_redirect') do
-      subject.follow_redirects = 0
+      subject = Net::Hippie::Client.new(follow_redirects: 0)
       response = subject.get('https://pypi.org/pypi/django/1.11.3/json')
       refute_nil response
       assert_kind_of Net::HTTPRedirection, response
@@ -48,7 +47,7 @@ class ClientTest < Minitest::Test
 
   def test_does_follow_redirects
     VCR.use_cassette('does_follow_redirects') do
-      subject.follow_redirects = 10
+      subject = Net::Hippie::Client.new(follow_redirects: 10)
       response = subject.get('https://pypi.org/pypi/django/1.11.3/json')
       refute_nil response
       assert_kind_of Net::HTTPOK, response
@@ -58,7 +57,7 @@ class ClientTest < Minitest::Test
 
   def test_follow_redirects_with_relative_paths
     VCR.use_cassette('follow_redirects_with_relative_paths') do
-      subject.follow_redirects = 10
+      subject = Net::Hippie::Client.new(follow_redirects: 10)
       response = subject.get("http://go.microsoft.com/fwlink/?LinkId=329770")
       refute_nil response
       assert_kind_of Net::HTTPOK, response
@@ -76,7 +75,7 @@ class ClientTest < Minitest::Test
       .then
       .to_return(status: 200, body: { success: true }.to_json)
 
-    subject.follow_redirects = n
+    subject = Net::Hippie::Client.new(follow_redirects: n)
     response = subject.get(url)
     refute_nil response
     assert_equal Net::HTTPOK, response.class
@@ -303,11 +302,5 @@ class ClientTest < Minitest::Test
       end
     end
     assert(@called)
-  end
-
-  def test_open_timeout_setting
-    assert_equal subject.open_timeout, 10
-    @subject.open_timeout = 5
-    assert_equal subject.open_timeout, 5
   end
 end

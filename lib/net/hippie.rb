@@ -56,11 +56,15 @@ module Net
     def self.method_missing(symbol, *args)
       default_client.with_retry(retries: 3) do |client|
         client.public_send(symbol, *args)
-      end
+      end || super
+    end
+
+    def self.respond_to_missing?(name, _include_private = false)
+      Client.public_instance_methods.include?(name.to_sym)
     end
 
     def self.default_client
-      @subject ||= Client.new
+      @default_client ||= Client.new(follow_redirects: 3, logger: logger)
     end
   end
 end

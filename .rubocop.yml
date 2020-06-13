@@ -5,7 +5,7 @@ AllCops:
     - 'test/**/*'
     - 'tmp/**/*'
     - 'vendor/**/*'
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
 
 Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation

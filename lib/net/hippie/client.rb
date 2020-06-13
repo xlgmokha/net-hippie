@@ -10,26 +10,24 @@ module Net
         'User-Agent' => "net/hippie #{Net::Hippie::VERSION}"
       }.freeze
 
-      attr_accessor :mapper, :read_timeout, :open_timeout, :logger
-      attr_accessor :follow_redirects
-      attr_accessor :certificate, :key, :passphrase
+      attr_reader :mapper, :logger
+      attr_reader :follow_redirects
 
       def initialize(options = {})
-        @default_headers = options.fetch(:headers, DEFAULT_HEADERS)
+        @options = options
         @mapper = options.fetch(:mapper, ContentTypeMapper.new)
-        @read_timeout = options.fetch(:read_timeout, 10)
-        @open_timeout = options.fetch(:open_timeout, 10)
-        @verify_mode = options.fetch(:verify_mode, Net::Hippie.verify_mode)
         @logger = options.fetch(:logger, Net::Hippie.logger)
         @follow_redirects = options.fetch(:follow_redirects, 0)
-        @certificate = options[:certificate]
-        @key = options[:key]
-        @passphrase = options[:passphrase]
-        @connections = {}
+        @http_connections = Hash.new do |hash, key|
+          uri = URI.parse(key.to_s)
+          build_http_for(uri).tap do |http|
+            hash[key] = http
+          end
+        end
       end
 
       def execute(uri, request, limit: follow_redirects, &block)
-        http = http_for(uri)
+        http = @http_connections[uri]
         response = http.request(request)
         if limit.positive? && response.is_a?(Net::HTTPRedirection)
           url = build_url_for(http, response['location'])
@@ -80,7 +78,9 @@ module Net
 
       private
 
-      attr_reader :default_headers, :verify_mode
+      def default_headers
+        @options.fetch(:headers, DEFAULT_HEADERS)
+      end
 
       def attempt(attempt, max)
         yield
@@ -92,38 +92,33 @@ module Net
         sleep delay
       end
 
-      def http_for(uri)
-        @connections.fetch(uri.to_s) do |key|
-          uri = URI.parse(uri.to_s)
-          http = Net::HTTP.new(uri.host, uri.port)
-          http.read_timeout = read_timeout
-          http.open_timeout = open_timeout
-          http.use_ssl = uri.scheme == 'https'
-          http.verify_mode = verify_mode
-          http.set_debug_output(logger)
-          apply_client_tls_to(http)
-          @connections[key] = http
-          http
-        end
+      def build_http_for(uri)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.read_timeout = @options.fetch(:read_timeout, 10)
+        http.open_timeout = @options.fetch(:open_timeout, 10)
+        http.use_ssl = uri.scheme == 'https'
+        http.verify_mode = @options.fetch(:verify_mode, Net::Hippie.verify_mode)
+        http.set_debug_output(logger)
+        apply_client_tls_to(http)
+        http
       end
 
       def request_for(type, uri, headers: {}, body: {})
         final_headers = default_headers.merge(headers)
-        uri = URI.parse(uri.to_s)
-        type.new(uri, final_headers).tap do |x|
+        type.new(URI.parse(uri.to_s), final_headers).tap do |x|
           x.body = mapper.map_from(final_headers, body) unless body.empty?
         end
       end
 
-      def private_key(type = OpenSSL::PKey::RSA)
+      def private_key(key, passphrase, type = OpenSSL::PKey::RSA)
         passphrase ? type.new(key, passphrase) : type.new(key)
       end
 
       def apply_client_tls_to(http)
-        return if certificate.nil? || key.nil?
+        return if @options[:certificate].nil? || @options[:key].nil?
 
-        http.cert = OpenSSL::X509::Certificate.new(certificate)
-        http.key = private_key
+        http.cert = OpenSSL::X509::Certificate.new(@options[:certificate])
+        http.key = private_key(@options[:key], @options[:passphrase])
       end
 
       def run(uri, http_method, headers, body, &block)
