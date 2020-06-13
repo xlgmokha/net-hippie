@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Limit mutable options on Client.
 - Change default `read_timeout` to 10 seconds.
 - Change default `open_timeout` to 10 seconds.
+- Log to `STDERR` by default instead of `STDOUT`.
 
 ## [0.3.2] - 2020-01-28
 ### Fixed
