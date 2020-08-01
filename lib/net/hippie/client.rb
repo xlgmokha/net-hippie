@@ -10,8 +10,7 @@ module Net
         'User-Agent' => "net/hippie #{Net::Hippie::VERSION}"
       }.freeze
 
-      attr_reader :mapper, :logger
-      attr_reader :follow_redirects
+      attr_reader :mapper, :logger, :follow_redirects
 
       def initialize(options = {})
         @options = options
