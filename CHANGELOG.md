@@ -1,4 +1,4 @@
-Version 0.3.2
+Version 1.0.0
 
 # Changelog
 All notable changes to this project will be documented in this file.
@@ -7,10 +7,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.0.0] - 2020-07-31
 ### Added
-- Add simpler API to remove need to instantiate `Client` directly.
+- Add simpler API to remove the need to instantiate a `Client` directly.
 - Default to 3 retries using simple API.
-- Re-use client connection for connections to the same schem, host, and port.
+- Re-use client connection for connections to the same scheme, host, and port.
 
 ### Removed
 - Remove support for Ruby 2.4
@@ -67,7 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - with\_retry.https://www.mokhan.ca/%F0%9F%92%8E/2018/11/10/net-hippie-0-2-0.html
 - authorization header helpers
 
-[Unreleased]: https://github.com/mokhan/net-hippie/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/mokhan/net-hippie/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/mokhan/net-hippie/compare/v0.3.2...v1.0.0
 [0.3.2]: https://github.com/mokhan/net-hippie/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/mokhan/net-hippie/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/mokhan/net-hippie/compare/v0.2.7...v0.3.0
