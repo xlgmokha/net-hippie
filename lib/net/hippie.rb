@@ -6,10 +6,10 @@ require 'logger'
 require 'net/http'
 require 'openssl'
 
+require 'net/hippie/version'
 require 'net/hippie/client'
 require 'net/hippie/connection'
 require 'net/hippie/content_type_mapper'
-require 'net/hippie/version'
 
 module Net
   # net/http for hippies.
