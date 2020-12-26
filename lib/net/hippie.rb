@@ -31,7 +31,7 @@ module Net
     ].freeze
 
     def self.logger
-      @logger ||= Logger.new(STDERR)
+      @logger ||= Logger.new($stderr)
     end
 
     def self.logger=(logger)
@@ -61,7 +61,7 @@ module Net
     end
 
     def self.respond_to_missing?(name, _include_private = false)
-      Client.public_instance_methods.include?(name.to_sym)
+      Client.public_instance_methods.include?(name.to_sym) || super
     end
 
     def self.default_client
