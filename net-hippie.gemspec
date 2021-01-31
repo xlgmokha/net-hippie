@@ -12,10 +12,13 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'net/http for hippies. ☮️ '
   spec.description   = 'net/http for hippies. ☮️ '
-  spec.homepage      = 'https://github.com/mokhan/net-hippie/'
+  spec.homepage      = 'https://rubygems.org/gems/net-hippie'
   spec.license       = 'MIT'
+  spec.metadata      = {
+    'source_code_uri' => 'https://github.com/xlgmokha/net-hippie'
+  }
 
-  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
+  spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = 'exe'

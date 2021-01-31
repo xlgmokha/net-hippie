@@ -1,7 +1,7 @@
 # Net::Hippie
 
 [![Gem Version](https://badge.fury.io/rb/net-hippie.svg)](https://rubygems.org/gems/net-hippie)
-[![Build Status](https://github.com/mokhan/net-hippie/workflows/Test/badge.svg)](https://github.com/mokhan/net-hippie/actions)
+[![Build Status](https://github.com/xlgmokha/net-hippie/workflows/Test/badge.svg)](https://github.com/xlgmokha/net-hippie/actions)
 
 `Net::Hippie` is a light weight wrapper around `net/http` that defaults to
 sending `JSON` messages.
@@ -95,7 +95,7 @@ push git commits and tags, and push the `.gem` file to [rubygems.org](https://ru
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/mokhan/net-hippie.
+Bug reports and pull requests are welcome on GitHub at https://github.com/xlgmokha/net-hippie.
 
 ## License
 
