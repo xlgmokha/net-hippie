@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
-set -euo pipefail
-IFS=$'\n\t'
+#!/bin/sh
+set -e
+[ -z "$DEBUG" ] || set -x
 
-ruby -v
-gem install bundler -v '~> 2.0'
+cd "$(dirname "$0")/.."
+
 bundle install
