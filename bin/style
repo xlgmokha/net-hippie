@@ -5,4 +5,4 @@ set -e
 
 cd "$(dirname "$0")/.."
 
-bundle exec rake test
+bundle exec rake rubocop
