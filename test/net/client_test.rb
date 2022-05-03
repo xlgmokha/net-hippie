@@ -303,4 +303,26 @@ class ClientTest < Minitest::Test
     end
     assert(@called)
   end
+
+  def test_debug_output_not_set_by_default
+    VCR.use_cassette('get_root') do
+      client = Net::Hippie::Client.new(logger: StringIO.new)
+      uri = URI.parse('https://www.mokhan.ca')
+      client.get(uri, headers: {})
+      subject = client.logger
+      subject.rewind
+      assert_empty subject.read
+    end
+  end
+
+  def test_debug_output_can_be_sent_to_logger
+    VCR.use_cassette('get_root') do
+      client = Net::Hippie::Client.new(logger: StringIO.new, enable_debug_output: true)
+      uri = URI.parse('https://www.mokhan.ca')
+      client.get(uri, headers: {})
+      subject = client.logger
+      subject.rewind
+      assert_match %r{^(opening connection to www.mokhan.ca:443)}, subject.read
+    end
+  end
 end
