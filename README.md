@@ -65,13 +65,10 @@ client = Net::Hippie::Client.new(
 )
 ```
 
-To enable HTTP debug output you will need to explicitly set it.
+To disable logging you will need to override the default logger.
 
 ```ruby
-Net::Hippie.logger = Logger.new(STDERR)
-client = Net::Hippie::Client.new(
-  enable_debug_output: true
-)
+client = Net::Hippie::Client.new(logger: nil)
 ```
 
 ### Basic Auth
