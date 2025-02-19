@@ -27,7 +27,11 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.required_ruby_version = Gem::Requirement.new('>= 2.5.0')
 
+  spec.add_dependency 'base64', '~> 0.1'
+  spec.add_dependency 'json', '~> 2.0'
   spec.add_dependency 'logger', '~> 1.0'
+  spec.add_dependency 'net-http', '~> 0.6'
+  spec.add_dependency 'openssl', '~> 3.0'
   spec.add_development_dependency 'minitest', '~> 5.0'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rubocop', '~> 1.9'
