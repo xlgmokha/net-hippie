@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add explicit dependency on `base64` gem
 - Add explicit dependency on `json` gem
 - Add explicit dependency on `net-http` gem
-- Add explicit dependency on `openss` gem
+- Add explicit dependency on `openssl` gem
 
 ## [1.2.0] - 2024-12-05
 ### Changed
