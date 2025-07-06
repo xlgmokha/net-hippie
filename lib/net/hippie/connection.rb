@@ -1,10 +1,49 @@
 # frozen_string_literal: true
 
+require_relative 'rust_backend'
+
 module Net
   module Hippie
     # A connection to a specific host
     class Connection
       def initialize(scheme, host, port, options = {})
+        @scheme = scheme
+        @host = host
+        @port = port
+        @options = options
+
+        if RustBackend.enabled?
+          require_relative 'rust_connection'
+          @backend = RustConnection.new(scheme, host, port, options)
+        else
+          @backend = create_ruby_backend(scheme, host, port, options)
+        end
+      end
+
+      def run(request)
+        @backend.run(request)
+      end
+
+      def build_url_for(path)
+        @backend.build_url_for(path)
+      end
+
+      private
+
+      def create_ruby_backend(scheme, host, port, options)
+        # This is the original Ruby implementation wrapped in an object
+        # that matches the same interface as RustConnection
+        RubyConnection.new(scheme, host, port, options)
+      end
+    end
+
+    # Wrapper for the original Ruby implementation
+    class RubyConnection
+      def initialize(scheme, host, port, options = {})
+        @scheme = scheme
+        @host = host
+        @port = port
+        
         http = Net::HTTP.new(host, port)
         http.read_timeout = options.fetch(:read_timeout, 10)
         http.open_timeout = options.fetch(:open_timeout, 10)

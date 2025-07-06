@@ -7,3 +7,26 @@
 /spec/reports/
 /tmp/
 Gemfile.lock
+
+# Rust build artifacts
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# Ruby extension build artifacts
+*.bundle
+*.so
+*.dylib
+*.dll
+mkmf.log
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Editor artifacts
+*.swp
+*.swo
+*~
+.vscode/
+.idea/

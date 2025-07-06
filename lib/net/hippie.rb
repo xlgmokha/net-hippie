@@ -10,6 +10,7 @@ require 'net/hippie/version'
 require 'net/hippie/client'
 require 'net/hippie/connection'
 require 'net/hippie/content_type_mapper'
+require 'net/hippie/rust_backend'
 
 module Net
   # net/http for hippies.
