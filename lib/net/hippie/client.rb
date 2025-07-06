@@ -2,16 +2,93 @@
 
 module Net
   module Hippie
-    # A simple client for connecting with http resources.
+    # HTTP client with connection pooling, automatic retries, and JSON-first defaults.
+    # 
+    # The Client class provides the core HTTP functionality for Net::Hippie, supporting
+    # all standard HTTP methods with intelligent defaults for JSON APIs. Features include:
+    #
+    # * Connection pooling and reuse per host
+    # * Automatic retry with exponential backoff
+    # * Redirect following with configurable limits  
+    # * TLS/SSL support with client certificates
+    # * Comprehensive timeout configuration
+    # * Pluggable content-type mapping
+    #
+    # @since 0.1.0
+    #
+    # == Basic Usage
+    #
+    #   client = Net::Hippie::Client.new
+    #   response = client.get('https://api.github.com/users/octocat')
+    #   data = JSON.parse(response.body)
+    #
+    # == Advanced Configuration
+    #
+    #   client = Net::Hippie::Client.new(
+    #     read_timeout: 30,
+    #     open_timeout: 10,
+    #     follow_redirects: 5,
+    #     headers: { 'User-Agent' => 'MyApp/1.0' }
+    #   )
+    #
+    # == Retry Logic
+    #
+    #   # Automatic retries with exponential backoff
+    #   response = client.with_retry(retries: 3) do |c|
+    #     c.post('https://api.example.com/data', body: payload)
+    #   end
+    #
+    # @see Net::Hippie The main module for simple usage
     class Client
+      # Default HTTP headers sent with every request.
+      # Configured for JSON APIs with a descriptive User-Agent.
+      #
+      # @since 0.1.0
       DEFAULT_HEADERS = {
         'Accept' => 'application/json',
         'Content-Type' => 'application/json',
         'User-Agent' => "net/hippie #{Net::Hippie::VERSION}"
       }.freeze
 
+      # @!attribute [r] mapper
+      #   @return [ContentTypeMapper] Content type mapper for request bodies
+      # @!attribute [r] logger  
+      #   @return [Logger, nil] Logger instance for debugging
+      # @!attribute [r] follow_redirects
+      #   @return [Integer] Maximum number of redirects to follow
       attr_reader :mapper, :logger, :follow_redirects
 
+      # Creates a new HTTP client with optional configuration.
+      #
+      # @param options [Hash] Client configuration options
+      # @option options [ContentTypeMapper] :mapper Custom content-type mapper
+      # @option options [Logger, nil] :logger Logger for request debugging
+      # @option options [Integer] :follow_redirects Maximum redirects to follow (default: 0)
+      # @option options [Hash] :headers Default headers to merge with requests
+      # @option options [Integer] :read_timeout Socket read timeout in seconds (default: 10)
+      # @option options [Integer] :open_timeout Socket open timeout in seconds (default: 10)
+      # @option options [Integer] :verify_mode SSL verification mode (default: VERIFY_PEER)
+      # @option options [String] :certificate Client certificate for mutual TLS
+      # @option options [String] :key Private key for client certificate
+      # @option options [String] :passphrase Passphrase for encrypted private key
+      #
+      # @since 0.1.0
+      #
+      # @example Basic client
+      #   client = Net::Hippie::Client.new
+      #
+      # @example Client with custom timeouts
+      #   client = Net::Hippie::Client.new(
+      #     read_timeout: 30,
+      #     open_timeout: 5
+      #   )
+      #
+      # @example Client with mutual TLS
+      #   client = Net::Hippie::Client.new(
+      #     certificate: File.read('client.crt'),
+      #     key: File.read('client.key'),
+      #     passphrase: 'secret'
+      #   )
       def initialize(options = {})
         @options = options
         @mapper = options.fetch(:mapper, ContentTypeMapper.new)
@@ -24,6 +101,17 @@ module Net
         end
       end
 
+      # Executes an HTTP request with automatic redirect following.
+      #
+      # @param uri [String, URI] The target URI for the request
+      # @param request [Net::HTTPRequest] The prepared HTTP request object
+      # @param limit [Integer] Maximum number of redirects to follow
+      # @yield [request, response] Optional block to process request/response
+      # @yieldparam request [Net::HTTPRequest] The HTTP request object
+      # @yieldparam response [Net::HTTPResponse] The HTTP response object
+      # @return [Net::HTTPResponse] The final HTTP response
+      # @raise [Net::ReadTimeout, Net::OpenTimeout] When request times out
+      # @since 0.1.0
       def execute(uri, request, limit: follow_redirects, &block)
         connection = connection_for(uri)
         response = connection.run(request)
@@ -36,34 +124,118 @@ module Net
         end
       end
 
+      # Performs an HTTP GET request.
+      #
+      # @param uri [String, URI] The target URI
+      # @param headers [Hash] Additional HTTP headers
+      # @param body [Hash, String] Request body (typically unused for GET)
+      # @yield [request, response] Optional block to process request/response
+      # @return [Net::HTTPResponse] The HTTP response
+      # @since 0.1.0
+      #
+      # @example Simple GET
+      #   response = client.get('https://api.github.com/users/octocat')
+      #
+      # @example GET with custom headers
+      #   response = client.get('https://api.example.com', 
+      #                         headers: { 'Authorization' => 'Bearer token' })
       def get(uri, headers: {}, body: {}, &block)
         run(uri, Net::HTTP::Get, headers, body, &block)
       end
 
+      # Performs an HTTP PATCH request.
+      #
+      # @param uri [String, URI] The target URI
+      # @param headers [Hash] Additional HTTP headers
+      # @param body [Hash, String] Request body data
+      # @yield [request, response] Optional block to process request/response
+      # @return [Net::HTTPResponse] The HTTP response
+      # @since 0.2.6
+      #
+      # @example Update resource
+      #   response = client.patch('https://api.example.com/users/123',
+      #                           body: { name: 'Updated Name' })
       def patch(uri, headers: {}, body: {}, &block)
         run(uri, Net::HTTP::Patch, headers, body, &block)
       end
 
+      # Performs an HTTP POST request.
+      #
+      # @param uri [String, URI] The target URI
+      # @param headers [Hash] Additional HTTP headers
+      # @param body [Hash, String] Request body data
+      # @yield [request, response] Optional block to process request/response
+      # @return [Net::HTTPResponse] The HTTP response
+      # @since 0.1.0
+      #
+      # @example Create resource
+      #   response = client.post('https://api.example.com/users',
+      #                          body: { name: 'John', email: 'john@example.com' })
       def post(uri, headers: {}, body: {}, &block)
         run(uri, Net::HTTP::Post, headers, body, &block)
       end
 
+      # Performs an HTTP PUT request.
+      #
+      # @param uri [String, URI] The target URI
+      # @param headers [Hash] Additional HTTP headers
+      # @param body [Hash, String] Request body data
+      # @yield [request, response] Optional block to process request/response
+      # @return [Net::HTTPResponse] The HTTP response
+      # @since 0.1.0
+      #
+      # @example Replace resource
+      #   response = client.put('https://api.example.com/users/123',
+      #                         body: { name: 'John', email: 'john@example.com' })
       def put(uri, headers: {}, body: {}, &block)
         run(uri, Net::HTTP::Put, headers, body, &block)
       end
 
+      # Performs an HTTP DELETE request.
+      #
+      # @param uri [String, URI] The target URI
+      # @param headers [Hash] Additional HTTP headers
+      # @param body [Hash, String] Request body (typically unused for DELETE)
+      # @yield [request, response] Optional block to process request/response
+      # @return [Net::HTTPResponse] The HTTP response
+      # @since 0.1.8
+      #
+      # @example Delete resource
+      #   response = client.delete('https://api.example.com/users/123')
       def delete(uri, headers: {}, body: {}, &block)
         run(uri, Net::HTTP::Delete, headers, body, &block)
       end
 
-      # attempt 1 -> delay 0.1 second
-      # attempt 2 -> delay 0.2 second
-      # attempt 3 -> delay 0.4 second
-      # attempt 4 -> delay 0.8 second
-      # attempt 5 -> delay 1.6 second
-      # attempt 6 -> delay 3.2 second
-      # attempt 7 -> delay 6.4 second
-      # attempt 8 -> delay 12.8 second
+      # Executes HTTP requests with automatic retry and exponential backoff.
+      # 
+      # Retry logic with exponential backoff and jitter:
+      # * Attempt 1 -> delay 0.1 second
+      # * Attempt 2 -> delay 0.2 second  
+      # * Attempt 3 -> delay 0.4 second
+      # * Attempt 4 -> delay 0.8 second
+      # * Attempt 5 -> delay 1.6 second
+      # * Attempt 6 -> delay 3.2 second
+      # * Attempt 7 -> delay 6.4 second
+      # * Attempt 8 -> delay 12.8 second
+      #
+      # Only retries on network-related errors defined in CONNECTION_ERRORS.
+      #
+      # @param retries [Integer] Maximum number of retry attempts (default: 3)
+      # @yield [client] Block that performs the HTTP request
+      # @yieldparam client [Client] The client instance to use for requests
+      # @return [Net::HTTPResponse] The successful HTTP response
+      # @raise [Net::ReadTimeout, Net::OpenTimeout] When all retry attempts fail
+      # @since 0.2.1
+      #
+      # @example Retry a POST request
+      #   response = client.with_retry(retries: 5) do |c|
+      #     c.post('https://api.unreliable.com/data', body: payload)
+      #   end
+      #
+      # @example No retries
+      #   response = client.with_retry(retries: 0) do |c|
+      #     c.get('https://api.example.com/health')
+      #   end
       def with_retry(retries: 3)
         retries = 0 if retries.nil? || retries.negative?
 
