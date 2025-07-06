@@ -1,4 +1,4 @@
-use magnus::{define_module, function, method, Error, Module, Object, Value, class};
+use magnus::{define_module, function, method, Error, Module, Object, Value, class, RHash, TryConvert};
 use magnus::value::ReprValue;
 use reqwest::{Client, Method, Response};
 use std::collections::HashMap;
@@ -59,7 +59,7 @@ impl RustClient {
         &self,
         method_str: String,
         url: String,
-        _headers: Value,  // Simplified - ignore headers for now
+        headers: Value,
         body: String,
     ) -> Result<RustResponse, Error> {
         let method = match method_str.to_uppercase().as_str() {
@@ -73,6 +73,15 @@ impl RustClient {
 
         self.runtime.block_on(async {
             let mut request_builder = self.client.request(method, &url);
+
+            // Add headers if provided
+            if let Ok(headers_hash) = RHash::from_value(headers) {
+                for (key, value) in headers_hash {
+                    if let (Ok(key_str), Ok(value_str)) = (String::try_convert(key), String::try_convert(value)) {
+                        request_builder = request_builder.header(&key_str, &value_str);
+                    }
+                }
+            }
 
             // Add body if not empty
             if !body.is_empty() {
