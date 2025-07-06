@@ -32,7 +32,7 @@ module Net
     ].freeze
 
     def self.logger
-      @logger ||= Logger.new($stderr)
+      @logger ||= Logger.new(nil)
     end
 
     def self.logger=(logger)

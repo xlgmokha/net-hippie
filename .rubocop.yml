@@ -6,10 +6,19 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
   NewCops: enable
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 3.2
+
+Gemspec/DevelopmentDependencies:
+  EnforcedStyle: gemspec
 
 Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation
 
+Naming/BlockForwarding:
+  Enabled: false
+
 Naming/RescuedExceptionsVariableName:
   PreferredName: error
+
+Style/ArgumentsForwarding:
+  Enabled: false

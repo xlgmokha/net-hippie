@@ -84,7 +84,7 @@ module Net
         raise error if attempt == max
 
         delay = ((2**attempt) * 0.1) + Random.rand(0.05) # delay + jitter
-        logger.warn("`#{error.message}` #{attempt + 1}/#{max} Delay: #{delay}s")
+        logger&.warn("`#{error.message}` #{attempt + 1}/#{max} Delay: #{delay}s")
         sleep delay
       end
 

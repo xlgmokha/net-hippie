@@ -1,7 +1,8 @@
 # Net::Hippie
 
 [![Gem Version](https://badge.fury.io/rb/net-hippie.svg)](https://rubygems.org/gems/net-hippie)
-[![Build Status](https://github.com/xlgmokha/net-hippie/workflows/Test/badge.svg)](https://github.com/xlgmokha/net-hippie/actions)
+[![Build Status](https://github.com/xlgmokha/net-hippie/actions/workflows/ci.yml/badge.svg))](https://github.com/xlgmokha/net-hippie/actions)
+
 
 `Net::Hippie` is a light weight wrapper around `net/http` that defaults to
 sending `JSON` messages.
@@ -63,6 +64,12 @@ client = Net::Hippie::Client.new(
   key: ENV['CLIENT_KEY'],
   passphrase: ENV['CLIENT_KEY_PASSPHRASE']
 )
+```
+
+To disable logging you will need to override the default logger.
+
+```ruby
+client = Net::Hippie::Client.new(logger: nil)
 ```
 
 ### Basic Auth

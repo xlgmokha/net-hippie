@@ -3,8 +3,7 @@ require 'test_helper'
 class ClientTest < Minitest::Test
   attr_reader :subject
 
-  def initialize(*args)
-    super
+  def setup
     @subject = Net::Hippie::Client.new
   end
 
@@ -302,5 +301,20 @@ class ClientTest < Minitest::Test
       end
     end
     assert(@called)
+  end
+
+  def test_logger
+    VCR.turned_off do
+      WebMock.allow_net_connect!
+      StringIO.open do |io|
+        subject = Net::Hippie::Client.new(logger: Logger.new(io, level: :debug))
+        response = subject.get('https://www.example.org/')
+
+        refute_nil response
+        assert_kind_of Net::HTTPOK, response
+        io.rewind
+        assert_match %r{^(opening connection to www.example.org:443)}, io.read
+      end
+    end
   end
 end

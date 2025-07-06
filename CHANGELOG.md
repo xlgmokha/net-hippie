@@ -1,4 +1,4 @@
-Version 1.1.1
+Version 1.3.0
 
 # Changelog
 All notable changes to this project will be documented in this file.
@@ -7,9 +7,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.3.0] - 2025-04-30
+### Changed
+- Ruby 2.3+ required
+
+### Fixed
+- Add explicit dependency on `base64` gem
+- Add explicit dependency on `json` gem
+- Add explicit dependency on `net-http` gem
+- Add explicit dependency on `openssl` gem
+
+## [1.2.0] - 2024-12-05
+### Changed
+- Disable logger by default
+
 ## [1.1.1] - 2021-01-30
 ### Changed
-- Update 
+- Update Gem Metadata
 
 ## [1.1.0] - 2020-12-26
 ### Added
@@ -80,7 +95,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - with\_retry.
 - authorization header helpers
 
-[Unreleased]: https://github.com/xlgmokha/net-hippie/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/xlgmokha/net-hippie/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/xlgmokha/net-hippie/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/xlgmokha/net-hippie/compare/v1.1.1...v1.2.0
+[1.1.1]: https://github.com/xlgmokha/net-hippie/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/xlgmokha/net-hippie/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/xlgmokha/net-hippie/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/xlgmokha/net-hippie/compare/v0.3.2...v1.0.0

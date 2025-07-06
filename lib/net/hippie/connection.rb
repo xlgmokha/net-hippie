@@ -49,7 +49,7 @@ module Net
         http.open_timeout = options.fetch(:open_timeout, 10)
         http.use_ssl = scheme == 'https'
         http.verify_mode = options.fetch(:verify_mode, Net::Hippie.verify_mode)
-        http.set_debug_output(options.fetch(:logger, Net::Hippie.logger))
+        http.set_debug_output(options[:logger]) if options[:logger]
         apply_client_tls_to(http, options)
         @http = http
       end
