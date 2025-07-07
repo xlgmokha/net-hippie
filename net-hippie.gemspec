@@ -27,6 +27,10 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.required_ruby_version = Gem::Requirement.new('>= 3.2.0')
 
+  # Rust extension support
+  spec.extensions = ['extconf.rb']
+  spec.metadata['allowed_push_host'] = 'https://rubygems.org'
+
   spec.add_dependency 'base64', '~> 0.1'
   spec.add_dependency 'json', '~> 2.0'
   spec.add_dependency 'logger', '~> 1.0'

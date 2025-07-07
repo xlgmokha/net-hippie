@@ -90,6 +90,10 @@ headers = { 'Authorization' => Net::Hippie.bearer_auth('token') }
 Net::Hippie.get('https://www.example.org', headers: headers)
 ```
 
+## Rust Backend
+
+Net::Hippie now supports an optional high-performance Rust backend. See [RUST_BACKEND.md](RUST_BACKEND.md) for installation and usage instructions.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/test` to run the tests.

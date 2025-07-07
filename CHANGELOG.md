@@ -8,6 +8,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2025-07-06
+### Added
+- Optional high-performance Rust backend using Magnus and reqwest
+- Environment variable toggle (`NET_HIPPIE_RUST=true`) for backend switching
+- Automatic fallback to Ruby backend when Rust extension unavailable
+- Comprehensive test coverage (75 tests, 177 assertions)
+- Detailed Rust backend documentation (RUST_BACKEND.md)
+- Native extension support via extconf.rb
+
+### Changed
+- **BREAKING**: Minimum Ruby version increased to 3.2.0
+- Enhanced Connection class to support backend abstraction
+- Improved error handling and timeout management
+- Updated gemspec with explicit stdlib dependencies
+
+### Performance
+- Significantly faster HTTP requests when using Rust backend
+- Better concurrency with Tokio async runtime
+- Lower memory usage with zero-cost abstractions
+- Type safety with compile-time guarantees
+
 ## [1.3.0] - 2025-04-30
 ### Changed
 - Ruby 2.3+ required
@@ -95,7 +116,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - with\_retry.
 - authorization header helpers
 
-[Unreleased]: https://github.com/xlgmokha/net-hippie/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/xlgmokha/net-hippie/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/xlgmokha/net-hippie/compare/v1.3.0...v2.0.0
 [1.3.0]: https://github.com/xlgmokha/net-hippie/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/xlgmokha/net-hippie/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/xlgmokha/net-hippie/compare/v1.1.0...v1.1.1
