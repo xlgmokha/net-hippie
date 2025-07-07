@@ -1,5 +1,4 @@
 use magnus::{define_module, function, method, Error, Module, Object, Value, class, RHash, TryConvert};
-use magnus::value::ReprValue;
 use reqwest::{Client, Method, Response};
 use std::collections::HashMap;
 use std::time::Duration;
@@ -75,7 +74,7 @@ impl RustClient {
             let mut request_builder = self.client.request(method, &url);
 
             // Add headers if provided
-            if let Ok(headers_hash) = RHash::from_value(headers) {
+            if let Some(headers_hash) = RHash::from_value(headers) {
                 for (key, value) in headers_hash {
                     if let (Ok(key_str), Ok(value_str)) = (String::try_convert(key), String::try_convert(value)) {
                         request_builder = request_builder.header(&key_str, &value_str);
