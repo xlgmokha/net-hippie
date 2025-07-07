@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'rust_backend'
-
 module Net
   module Hippie
     # Rust-powered HTTP connection with debug logging support.
@@ -38,7 +36,7 @@ module Net
         @port = port
         @options = options
         @logger = options[:logger]
-        
+
         # Create the Rust client (simplified version for now)
         @rust_client = Net::Hippie::RustClient.new
       end
@@ -55,10 +53,10 @@ module Net
         begin
           rust_response = @rust_client.public_send(method.downcase, url, headers, body)
           response = RustBackend::ResponseAdapter.new(rust_response)
-          
+
           # Debug log response
           log_response(response) if @logger
-          
+
           response
         rescue => e
           # Map Rust errors to Ruby equivalents
@@ -100,19 +98,19 @@ module Net
       def log_request(method, url, headers, body)
         # Format similar to Net::HTTP's debug output
         @logger << "-> \"#{method.upcase} #{url} HTTP/1.1\"\n"
-        
+
         # Log headers
         headers.each do |key, value|
           @logger << "-> \"#{key.downcase}: #{value}\"\n"
         end
-        
+
         @logger << "-> \"\"\n"  # Empty line
-        
+
         # Log body if present
         if body && !body.empty?
           @logger << "-> \"#{body}\"\n"
         end
-        
+
         @logger.flush if @logger.respond_to?(:flush)
       end
 
@@ -126,7 +124,7 @@ module Net
       def log_response(response)
         # Format similar to Net::HTTP's debug output
         @logger << "<- \"HTTP/1.1 #{response.code}\"\n"
-        
+
         # Log some common response headers if available
         %w[content-type content-length location server date].each do |header|
           value = response[header]
@@ -134,16 +132,16 @@ module Net
             @logger << "<- \"#{header}: #{value}\"\n"
           end
         end
-        
+
         @logger << "<- \"\"\n"  # Empty line
-        
+
         # Log response body (truncated if too long)
         body = response.body
         if body && !body.empty?
           display_body = body.length > 1000 ? "#{body[0...1000]}...[truncated]" : body
           @logger << "<- \"#{display_body}\"\n"
         end
-        
+
         @logger.flush if @logger.respond_to?(:flush)
       end
 

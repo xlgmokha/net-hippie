@@ -3,13 +3,13 @@
 module Net
   module Hippie
     # HTTP client with connection pooling, automatic retries, and JSON-first defaults.
-    # 
+    #
     # The Client class provides the core HTTP functionality for Net::Hippie, supporting
     # all standard HTTP methods with intelligent defaults for JSON APIs. Features include:
     #
     # * Connection pooling and reuse per host
     # * Automatic retry with exponential backoff
-    # * Redirect following with configurable limits  
+    # * Redirect following with configurable limits
     # * TLS/SSL support with client certificates
     # * Comprehensive timeout configuration
     # * Pluggable content-type mapping

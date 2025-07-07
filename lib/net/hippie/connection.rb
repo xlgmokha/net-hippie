@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'rust_backend'
-
 module Net
   module Hippie
     # Connection abstraction layer that supports both Ruby and Rust backends.
