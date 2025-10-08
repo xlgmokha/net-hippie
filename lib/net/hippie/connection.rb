@@ -17,9 +17,7 @@ module Net
 
       def run(request, &block)
         if block_given?
-          @http.request(request) do |response|
-            yield response
-          end
+          @http.request(request, &block)
         else
           @http.request(request)
         end
