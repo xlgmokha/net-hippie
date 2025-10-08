@@ -317,4 +317,42 @@ class ClientTest < Minitest::Test
       end
     end
   end
+
+  def test_post_with_streaming
+    chunks = ["chunk1", "chunk2", "chunk3"]
+    response_body = chunks.join
+
+    WebMock.stub_request(:post, "https://example.org/stream")
+      .to_return(status: 200, body: response_body)
+
+    uri = URI.parse('https://example.org/stream')
+    received_chunks = []
+
+    subject.post(uri, body: { test: true }) do |response|
+      response.read_body do |chunk|
+        received_chunks << chunk
+      end
+    end
+
+    assert_equal chunks.join, received_chunks.join
+  end
+
+  def test_get_with_streaming
+    chunks = ["data1\n", "data2\n", "data3\n"]
+    response_body = chunks.join
+
+    WebMock.stub_request(:get, "https://example.org/stream")
+      .to_return(status: 200, body: response_body)
+
+    uri = URI.parse('https://example.org/stream')
+    received_data = []
+
+    subject.get(uri) do |response|
+      response.read_body do |chunk|
+        received_data << chunk
+      end
+    end
+
+    assert_equal chunks.join, received_data.join
+  end
 end

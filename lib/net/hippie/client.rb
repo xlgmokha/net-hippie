@@ -26,13 +26,22 @@ module Net
 
       def execute(uri, request, limit: follow_redirects, &block)
         connection = connection_for(uri)
-        response = connection.run(request)
-        if limit.positive? && response.is_a?(Net::HTTPRedirection)
-          url = connection.build_url_for(response['location'])
-          request = request_for(Net::HTTP::Get, url)
-          execute(url, request, limit: limit - 1, &block)
+        if block_given?
+          if block.arity == 2
+            response = connection.run(request)
+            yield(request, response)
+          else
+            connection.run(request, &block)
+          end
         else
-          block_given? ? yield(request, response) : response
+          response = connection.run(request)
+          if limit.positive? && response.is_a?(Net::HTTPRedirection)
+            url = connection.build_url_for(response['location'])
+            request = request_for(Net::HTTP::Get, url)
+            execute(url, request, limit: limit - 1)
+          else
+            response
+          end
         end
       end
 

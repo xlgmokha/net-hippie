@@ -90,6 +90,40 @@ headers = { 'Authorization' => Net::Hippie.bearer_auth('token') }
 Net::Hippie.get('https://www.example.org', headers: headers)
 ```
 
+### Streaming Responses
+
+Net::Hippie supports streaming responses by passing a block that accepts the response object:
+
+```ruby
+Net::Hippie.post('https://api.example.com/stream', body: { prompt: 'Hello' }) do |response|
+  response.read_body do |chunk|
+    print chunk
+  end
+end
+```
+
+This is useful for Server-Sent Events (SSE) or other streaming APIs:
+
+```ruby
+client = Net::Hippie::Client.new
+client.post('https://api.openai.com/v1/chat/completions',
+  headers: {
+    'Authorization' => Net::Hippie.bearer_auth(ENV['OPENAI_API_KEY']),
+    'Content-Type' => 'application/json'
+  },
+  body: { model: 'gpt-4', messages: [{ role: 'user', content: 'Hi' }], stream: true }
+) do |response|
+  buffer = ""
+  response.read_body do |chunk|
+    buffer += chunk
+    while (line = buffer.slice!(/.*\n/))
+      next if line.strip.empty?
+      puts line if line.start_with?('data: ')
+    end
+  end
+end
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/test` to run the tests.

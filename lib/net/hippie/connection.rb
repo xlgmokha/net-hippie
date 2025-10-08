@@ -15,8 +15,14 @@ module Net
         @http = http
       end
 
-      def run(request)
-        @http.request(request)
+      def run(request, &block)
+        if block_given?
+          @http.request(request) do |response|
+            yield response
+          end
+        else
+          @http.request(request)
+        end
       end
 
       def build_url_for(path)
