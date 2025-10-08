@@ -26,23 +26,10 @@ module Net
 
       def execute(uri, request, limit: follow_redirects, &block)
         connection = connection_for(uri)
-        if block_given?
-          if block.arity == 2
-            response = connection.run(request)
-            yield(request, response)
-          else
-            connection.run(request, &block)
-          end
-        else
-          response = connection.run(request)
-          if limit.positive? && response.is_a?(Net::HTTPRedirection)
-            url = connection.build_url_for(response['location'])
-            request = request_for(Net::HTTP::Get, url)
-            execute(url, request, limit: limit - 1)
-          else
-            response
-          end
-        end
+        return execute_with_block(connection, request, &block) if block_given?
+
+        response = connection.run(request)
+        follow_redirect?(response, limit) ? follow_redirect(connection, response, limit) : response
       end
 
       def get(uri, headers: {}, body: {}, &block)
@@ -86,6 +73,20 @@ module Net
       private
 
       attr_reader :default_headers
+
+      def execute_with_block(connection, request, &block)
+        block.arity == 2 ? yield(request, connection.run(request)) : connection.run(request, &block)
+      end
+
+      def follow_redirect?(response, limit)
+        limit.positive? && response.is_a?(Net::HTTPRedirection)
+      end
+
+      def follow_redirect(connection, response, limit)
+        url = connection.build_url_for(response['location'])
+        request = request_for(Net::HTTP::Get, url)
+        execute(url, request, limit: limit - 1)
+      end
 
       def attempt(attempt, max)
         yield
